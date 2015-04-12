@@ -101,7 +101,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private ImageView mIconView;
     private TextView mDateView;
     private TextView mDescriptionView;
-    private TextView mHighTempView;
+    private TextView mPriceView;
     private TextView mNumBedsView;
     private TextView mSquareArea;
     private TextView mContentDescription;
@@ -132,7 +132,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
         mDateView = (TextView) rootView.findViewById(R.id.detail_date_textview);
         mDescriptionView = (TextView) rootView.findViewById(R.id.detail_address_textview);
-        mHighTempView = (TextView) rootView.findViewById(R.id.detail_price_textview);
+        mPriceView = (TextView) rootView.findViewById(R.id.detail_price_textview);
         mNumBedsView = (TextView) rootView.findViewById(R.id.detail_num_beds_textview);
         mSquareArea = (TextView) rootView.findViewById(R.id.detail_square_area_textview);
         mContentDescription = (TextView) rootView.findViewById(R.id.detail_content_description_textview);
@@ -233,7 +233,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             String price = data.getString(COL_PRICE);
             String priceString = Utility.formatPrice(getActivity(), price);
-            mHighTempView.setText(priceString);
+            mPriceView.setText(priceString);
 
             // Read number of beds from cursor and update view
             mNumBedsView.setText(getActivity().getString(R.string.format_num_beds, numberOfBeds));
@@ -283,7 +283,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void hideShowBrochureFields(int visibility) {
-        mHighTempView.setVisibility(visibility);
         mNumBedsView.setVisibility(visibility);
         mSquareArea.setVisibility(visibility);
         mContentDescription.setVisibility(visibility);
