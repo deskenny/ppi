@@ -1,0 +1,2 @@
+include ':app', ':jsoup'
+project(':jsoup').projectDir = new File('libs/jsoup-1.8.1.jar')

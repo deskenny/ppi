@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+
+    <!--
+         Used in Action Bar, and in AndroidManifest to tell the device the name of this app.
+         It's to keep this short, so your launcher icon isn't displayed with "The greatest Wea"
+         or something similar.
+    -->
+    <string name="app_name">Property Price</string>
+
+    <!--
+         By convention, "action" denotes that this String will be used as the label for an Action,
+         typically from the action bar.  The ActionBar is limited real estate, so shorter is better.
+    -->
+    <string name="action_settings">Settings</string>
+    <string name="action_map">Map Location</string>
+    <string name="action_share">Share</string>
+
+    <!-- Menu label to fetch updated Property info from the server -->
+    <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="title_activity_detail">Details</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Label for the location preference [CHAR LIMIT=30] -->
+    <string name="pref_location_label">Location</string>
+
+    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_location_key" translatable="false">location</string>
+
+    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
+    <string name="pref_location_default" translatable="false">downpatrick</string>
+
+    <!-- Strings related to Notification Enabled preference -->
+    <string name="pref_enable_notifications_key" translatable="false">enable_notifications</string>
+    <string name="pref_enable_notifications_label">Property Notifications</string>
+
+    <string name="pref_enable_notifications_true">Enabled</string>
+    <string name="pref_enable_notifications_false">Not Enabled</string>
+    <string name="pref_enable_notifications_default" translatable="false">true</string>
+
+    <!-- Strings for formatting Property-related data -->
+
+    <!-- Label for the temperature county preference [CHAR LIMIT=30] -->
+    <string name="pref_county_label">County</string>
+
+    <!-- Labels for the counties -->
+    <string name="pref_county_label_carlow">Carlow</string>
+    <string name="pref_county_label_cavan">Cavan</string>
+    <string name="pref_county_label_clare">Clare</string>
+    <string name="pref_county_label_cork">Cork</string>
+    <string name="pref_county_label_donegal">Donegal</string>
+    <string name="pref_county_label_dublin">Dublin</string>
+    <string name="pref_county_label_galway">Galway</string>
+    <string name="pref_county_label_kerry">Kerry</string>
+    <string name="pref_county_label_kildare">Kildare</string>
+    <string name="pref_county_label_kilkenny">Kilkenny</string>
+    <string name="pref_county_label_laois">Laois</string>
+    <string name="pref_county_label_leitrim">Leitrim</string>
+    <string name="pref_county_label_limerick">Limerick</string>
+    <string name="pref_county_label_longford">Longford</string>
+    <string name="pref_county_label_louth">Louth</string>
+    <string name="pref_county_label_mayo">Mayo</string>
+    <string name="pref_county_label_meath">Meath</string>
+    <string name="pref_county_label_monaghan">Monaghan</string>
+    <string name="pref_county_label_offaly">Offaly</string>
+    <string name="pref_county_label_roscommon">Roscommon</string>
+    <string name="pref_county_label_sligo">Sligo</string>
+    <string name="pref_county_label_tipperary">Tipperary</string>
+    <string name="pref_county_label_waterford">Waterford</string>
+    <string name="pref_county_label_westmeath">Westmeath</string>
+    <string name="pref_county_label_wexford">Wexford</string>
+    <string name="pref_county_label_wicklow">Wicklow</string>
+
+    <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_county_key" translatable="false">county</string>
+
+    <string name="pref_county_carlow" translatable="false">Carlow</string>
+    <string name="pref_county_cavan" translatable="false">Cavan</string>
+    <string name="pref_county_clare" translatable="false">Clare</string>
+    <string name="pref_county_cork" translatable="false">Cork</string>
+    <string name="pref_county_donegal" translatable="false">Donegal</string>
+    <string name="pref_county_dublin" translatable="false">Dublin</string>
+    <string name="pref_county_galway" translatable="false">Galway</string>
+    <string name="pref_county_kerry" translatable="false">Kerry</string>
+    <string name="pref_county_kildare" translatable="false">Kildare</string>
+    <string name="pref_county_kilkenny" translatable="false">Kilkenny</string>
+    <string name="pref_county_laois" translatable="false">Laois</string>
+    <string name="pref_county_leitrim" translatable="false">Leitrim</string>
+    <string name="pref_county_limerick" translatable="false">Limerick</string>
+    <string name="pref_county_longford" translatable="false">Longford</string>
+    <string name="pref_county_louth" translatable="false">Louth</string>
+    <string name="pref_county_mayo" translatable="false">Mayo</string>
+    <string name="pref_county_meath" translatable="false">Meath</string>
+    <string name="pref_county_monaghan" translatable="false">Monaghan</string>
+    <string name="pref_county_offaly" translatable="false">Offaly</string>
+    <string name="pref_county_roscommon" translatable="false">Roscommon</string>
+    <string name="pref_county_sligo" translatable="false">Sligo</string>
+    <string name="pref_county_tipperary" translatable="false">Tipperary</string>
+    <string name="pref_county_waterford" translatable="false">Waterford</string>
+    <string name="pref_county_westmeath" translatable="false">Westmeath</string>
+    <string name="pref_county_wexford" translatable="false">Wexford</string>
+    <string name="pref_county_wicklow" translatable="false">Wicklow</string>
+
+    <!-- Language-specific constants -->
+    <string name="today">Today</string>
+
+    <!-- For labelling tomorrow's forecast [CHAR LIMIT=15] -->
+    <string name="tomorrow">Tomorrow</string>
+
+    <!-- Date format [CHAR LIMIT=NONE] -->
+    <string name="format_full_friendly_date"><xliff:g id="month">%1$s</xliff:g>, <xliff:g id="day">%2$s</xliff:g></string>
+
+    <!-- Strings for formatting Property-related data -->
+    <!-- Temperature format [CHAR LIMIT=5 -->
+    <string name="format_temperature"><xliff:g id="temp">%1.0f</xliff:g>\u00B0</string>
+
+    <!-- Pressure format CHAR LIMIT=25] -->
+    <string name="format_square_area">Area: <xliff:g id="square_area">%1.0f</xliff:g> m²</string>
+
+    <!-- Number of Beds format CHAR LIMIT=25]-->
+    <string name="format_num_beds">Bedrooms: <xliff:g id="num_beds">%1$1d</xliff:g></string>
+
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">ppi.alley.com</string>
+    <string name="content_authority">com.alley.android.ppi.app</string>
+
+    <!-- Notification Format -->
+    <string name="format_notification">Property: <xliff:g id="condition">%1$s</xliff:g> High: <xliff:g id="high">%2$s</xliff:g> Low: <xliff:g id="low">%3$s</xliff:g></string>
+
+    <!-- Strings related to Notification preference -->
+    <string name="pref_last_notification">last_notification</string>
+
+    <string name="features">Features</string>
+
+    <string name="description">Description</string>
+
+    <string name="accommodation">Accommodation</string>
+
+    <string name="ber">Ber</string>
+
+    <string name="loadingresults">We have not found any sales to show you yet...</string>
+
+
+</resources>

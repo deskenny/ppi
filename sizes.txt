@@ -1,0 +1,17 @@
+xxhdpi 430 96
+xhdpi  287 64
+hdpi   215 48
+mdpi   143 32
+
+xxxhdpi 192 192
+xxhdpi  144 144
+xhdpi    96  96
+hdpi     72  72
+mdpi     48  48
+
+
+xxhdpi    96  96
+xhdpi    64 64
+hdpi     48 48
+mpi      32 32
+

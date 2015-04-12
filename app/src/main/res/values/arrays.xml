@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_county_options">
+        <item>@string/pref_county_label_carlow</item>
+        <item>@string/pref_county_label_cavan</item>
+        <item>@string/pref_county_label_clare</item>
+        <item>@string/pref_county_label_cork</item>
+        <item>@string/pref_county_label_donegal</item>
+        <item>@string/pref_county_label_dublin</item>
+        <item>@string/pref_county_label_galway</item>
+        <item>@string/pref_county_label_kerry</item>
+        <item>@string/pref_county_label_kildare</item>
+        <item>@string/pref_county_label_kilkenny</item>
+        <item>@string/pref_county_label_laois</item>
+        <item>@string/pref_county_label_leitrim</item>
+        <item>@string/pref_county_label_limerick</item>
+        <item>@string/pref_county_label_longford</item>
+        <item>@string/pref_county_label_louth</item>
+        <item>@string/pref_county_label_mayo</item>
+        <item>@string/pref_county_label_meath</item>
+        <item>@string/pref_county_label_monaghan</item>
+        <item>@string/pref_county_label_offaly</item>
+        <item>@string/pref_county_label_roscommon</item>
+        <item>@string/pref_county_label_sligo</item>
+        <item>@string/pref_county_label_tipperary</item>
+        <item>@string/pref_county_label_waterford</item>
+        <item>@string/pref_county_label_westmeath</item>
+        <item>@string/pref_county_label_wexford</item>
+        <item>@string/pref_county_label_wicklow</item>
+    </string-array>
+
+    <string-array name="pref_county_values">
+        <item>@string/pref_county_carlow</item>
+        <item>@string/pref_county_cavan</item>
+        <item>@string/pref_county_clare</item>
+        <item>@string/pref_county_cork</item>
+        <item>@string/pref_county_donegal</item>
+        <item>@string/pref_county_dublin</item>
+        <item>@string/pref_county_galway</item>
+        <item>@string/pref_county_kerry</item>
+        <item>@string/pref_county_kildare</item>
+        <item>@string/pref_county_kilkenny</item>
+        <item>@string/pref_county_laois</item>
+        <item>@string/pref_county_leitrim</item>
+        <item>@string/pref_county_limerick</item>
+        <item>@string/pref_county_longford</item>
+        <item>@string/pref_county_louth</item>
+        <item>@string/pref_county_mayo</item>
+        <item>@string/pref_county_meath</item>
+        <item>@string/pref_county_monaghan</item>
+        <item>@string/pref_county_offaly</item>
+        <item>@string/pref_county_roscommon</item>
+        <item>@string/pref_county_sligo</item>
+        <item>@string/pref_county_tipperary</item>
+        <item>@string/pref_county_waterford</item>
+        <item>@string/pref_county_westmeath</item>
+        <item>@string/pref_county_wexford</item>
+        <item>@string/pref_county_wicklow</item>
+    </string-array>
+</resources>
