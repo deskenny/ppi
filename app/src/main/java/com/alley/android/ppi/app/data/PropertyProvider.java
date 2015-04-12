@@ -35,21 +35,33 @@ public class PropertyProvider extends ContentProvider {
     static final int PROPERTY_WITH_LOCATION = 101;
     static final int PROPERTY_WITH_LOCATION_AND_ADDRESS = 102;
     static final int LOCATION = 300;
+    static final int IMAGE_BY_PROPERTY = 400;
 
-    private static final SQLiteQueryBuilder sWeatherByLocationSettingQueryBuilder;
+    private static final SQLiteQueryBuilder sPropertyByLocationSettingQueryBuilder;
+    private static final SQLiteQueryBuilder sImageByAddressQueryBuilder;
 
     static{
-        sWeatherByLocationSettingQueryBuilder = new SQLiteQueryBuilder();
-        
+        sPropertyByLocationSettingQueryBuilder = new SQLiteQueryBuilder();
+        sImageByAddressQueryBuilder = new SQLiteQueryBuilder();
+
         //This is an inner join which looks like
         //weather INNER JOIN location ON weather.location_id = location._id
-        sWeatherByLocationSettingQueryBuilder.setTables(
+        sPropertyByLocationSettingQueryBuilder.setTables(
                 PropertyContract.PropertyEntry.TABLE_NAME + " INNER JOIN " +
                         PropertyContract.LocationEntry.TABLE_NAME +
                         " ON " + PropertyContract.PropertyEntry.TABLE_NAME +
                         "." + PropertyContract.PropertyEntry.COLUMN_LOC_KEY +
                         " = " + PropertyContract.LocationEntry.TABLE_NAME +
                         "." + PropertyContract.LocationEntry._ID);
+
+        sImageByAddressQueryBuilder.setTables(
+                PropertyContract.ImageEntry.TABLE_NAME + " INNER JOIN " +
+                        PropertyContract.PropertyEntry.TABLE_NAME +
+                        " ON " + PropertyContract.ImageEntry.TABLE_NAME +
+                        "." + PropertyContract.ImageEntry.COLUMN_PROPERTY_KEY +
+                        " = " + PropertyContract.PropertyEntry.TABLE_NAME +
+                        "." + PropertyContract.PropertyEntry._ID);
+
     }
 
     //location.location_setting = ?
@@ -67,6 +79,10 @@ public class PropertyProvider extends ContentProvider {
     private static final String sAddressSelection =
                     PropertyContract.PropertyEntry.COLUMN_ADDRESS + " = ? ";
 
+//    private static final String sImageSelection =
+//            PropertyContract.PropertyEntry.COLUMN_ADDRESS + " = ? ";
+
+
     private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
         String locationSetting = PropertyContract.PropertyEntry.getLocationSettingFromUri(uri);
         long startDate = PropertyContract.PropertyEntry.getStartDateFromUri(uri);
@@ -82,7 +98,7 @@ public class PropertyProvider extends ContentProvider {
             selection = sLocationSettingWithStartDateSelection;
         }
 
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sPropertyByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 selection,
                 selectionArgs,
@@ -96,7 +112,21 @@ public class PropertyProvider extends ContentProvider {
             Uri uri, String[] projection, String sortOrder) {
         String address = PropertyContract.PropertyEntry.getAddressFromUri(uri);
 
-        return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+        return sPropertyByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                sAddressSelection,
+                new String[]{address},
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    private Cursor getImageByAddress(
+            Uri uri, String[] projection, String sortOrder) {
+        String address = PropertyContract.PropertyEntry.getAddressFromUri(uri);
+
+        return sImageByAddressQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 sAddressSelection,
                 new String[]{address},
@@ -126,6 +156,7 @@ public class PropertyProvider extends ContentProvider {
         matcher.addURI(authority, PropertyContract.PATH_PROPERTY, PROPERTY);
         matcher.addURI(authority, PropertyContract.PATH_PROPERTY + "/*", PROPERTY_WITH_LOCATION);
         matcher.addURI(authority, PropertyContract.PATH_PROPERTY + "/*/*", PROPERTY_WITH_LOCATION_AND_ADDRESS);
+        matcher.addURI(authority, PropertyContract.PATH_PROPERTY + "/*/*/*", IMAGE_BY_PROPERTY);
 
         matcher.addURI(authority, PropertyContract.PATH_LOCATION, LOCATION);
         return matcher;
@@ -157,7 +188,8 @@ public class PropertyProvider extends ContentProvider {
                 return PropertyContract.PropertyEntry.CONTENT_TYPE;
             case LOCATION:
                 return PropertyContract.LocationEntry.CONTENT_TYPE;
-
+            case IMAGE_BY_PROPERTY:
+                return PropertyContract.ImageEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -170,6 +202,13 @@ public class PropertyProvider extends ContentProvider {
         // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
+
+            // "property/*/*/*"
+            case IMAGE_BY_PROPERTY:
+            {
+                retCursor = getImageByAddress(uri, projection, sortOrder);
+                break;
+            }
             // "property/*/*"
             case PROPERTY_WITH_LOCATION_AND_ADDRESS:
             {

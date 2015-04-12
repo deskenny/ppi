@@ -46,7 +46,8 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_IMAGE_TABLE = "CREATE TABLE " + PropertyContract.ImageEntry.TABLE_NAME + " (" +
                 PropertyContract.ImageEntry._ID + " INTEGER PRIMARY KEY," +
-                PropertyContract.ImageEntry.COLUMN_PROPERTY_KEY + " INTEGER NOT NULL, " +
+                PropertyContract.ImageEntry.COLUMN_PROPERTY_KEY + " INTEGER, " +
+                PropertyContract.ImageEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
                 PropertyContract.ImageEntry.COLUMN_PHOTO + " BLOB NOT NULL," +
                 PropertyContract.ImageEntry.COLUMN_IS_PRIMARY + " BOOLEAN DEFAULT FALSE, " +
 
@@ -111,6 +112,7 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
         // should be your top priority before modifying this method.
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LocationEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PropertyContract.PropertyEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PropertyContract.ImageEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

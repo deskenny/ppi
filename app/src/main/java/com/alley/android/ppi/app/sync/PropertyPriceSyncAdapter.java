@@ -202,7 +202,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.i(LOG_TAG, "attempting lookup of " + propertyId + ". " + address + ". " + ppiURL);
                 // read the brochure details
                 readDetailsPage(ppiURL, values);
-                boolean brochureFound = googleHelper.readGoogle(address, values);
+                boolean brochureFound = googleHelper.readGoogle(address, values, getContext());
                 cVVector.add(values);
 
                 if (brochureFound) {

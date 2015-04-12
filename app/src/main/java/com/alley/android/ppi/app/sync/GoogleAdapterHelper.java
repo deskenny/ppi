@@ -1,6 +1,7 @@
 package com.alley.android.ppi.app.sync;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.util.Log;
 
 import com.alley.android.ppi.app.Utility;
@@ -20,7 +21,7 @@ public class GoogleAdapterHelper {
 
     public final String LOG_TAG = GoogleAdapterHelper.class.getSimpleName();
 
-    public boolean readGoogle(String address, ContentValues propertyValues) throws UnsupportedEncodingException, IOException, JSONException {
+    public boolean readGoogle(String address, ContentValues propertyValues, Context context) throws UnsupportedEncodingException, IOException, JSONException {
         String google = "http://www.google.com/search?q=";
         String search = address;
         String charset = "UTF-8";
@@ -42,7 +43,7 @@ public class GoogleAdapterHelper {
 
             if (url != null && url.contains("myhome.ie") && url.contains("brochure")) {
                 ContentValues brochureValues = new ContentValues();
-                myHomeHelper.readMyHomeBrochurePage(url, brochureValues);
+                myHomeHelper.readMyHomeBrochurePage(url, brochureValues, context);
                 if (Utility.isMatchedAddress(brochureValues, propertyValues)) {
                     brochureValues.remove(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
                     propertyValues.putAll(brochureValues);

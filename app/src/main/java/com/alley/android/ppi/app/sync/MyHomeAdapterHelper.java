@@ -2,8 +2,10 @@ package com.alley.android.ppi.app.sync;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.format.Time;
 import android.util.Log;
 
 import com.alley.android.ppi.app.data.PropertyContract;
@@ -34,7 +36,7 @@ public class MyHomeAdapterHelper {
     }
 
     // URL would be something like http://www.myhome.ie/residential/brochure/146-downpatrick-road-crumlin-dublin-12/2896646
-    public void readMyHomeBrochurePage(String link, ContentValues propertyValues) throws IOException, JSONException  {
+    public void readMyHomeBrochurePage(String link, ContentValues propertyValues, Context context) throws IOException, JSONException  {
         Log.i(LOG_TAG, "URL: " + link);
         propertyValues.put(PropertyContract.PropertyEntry.COLUMN_MY_HOME_BROCHURE_URL, link);
 
@@ -58,27 +60,69 @@ public class MyHomeAdapterHelper {
         readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_BER_DETAILS, "contentBER Details content2");
         readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION, "contentAccommodation content3");
         readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_ADDRESS, "brochureAddress");
-        storeImages(doc, propertyValues);
+        storeImages(doc, propertyValues, context);
     }
 
-    private void storeImages(Document doc, ContentValues propertyValues) throws JSONException {
+    private void storeImages(Document doc, ContentValues propertyValues, Context context) throws JSONException {
         boolean first = true;
-        Vector<ContentValues> cVVector = new Vector<ContentValues>();
+        Vector<ContentValues> cVVectorImages = new Vector<ContentValues>();
         Elements elements = doc.select("img[class=\"colorboxGallery replaceIfBroke\"]");
         for (Element element : elements) {
             String imageSrc = element.absUrl("src");
             byte[] bytes = getBitmap(imageSrc);
             if (first) {
                 propertyValues.put(PropertyContract.PropertyEntry.COLUMN_MAIN_PHOTO, bytes);
+                first = false;
             }
             else {
-//                ContentValues values = new ContentValues();
-//                values.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationId);
-//                values.put(PropertyContract.ImageEntry.COLUMN_PROPERTY_KEY, bytes);
-//                values.put(PropertyContract.ImageEntry.COLUMN_PHOTO, bytes);
-//                cVVector.add(values);
+                ContentValues values = new ContentValues();
+                values.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, (String) propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS));
+                values.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, first);
+                values.put(PropertyContract.ImageEntry.COLUMN_PHOTO, bytes);
+                cVVectorImages.add(values);
             }
         }
+        addImages(cVVectorImages, context);
+
+    }
+
+
+    private void addImages(Vector<ContentValues> cVVector, Context context)
+            throws JSONException {
+
+        // OWM returns daily forecasts based upon the local time of the city that is being
+        // asked for, which means that we need to know the GMT offset to translate this data
+        // properly.
+
+        // Since this data is also sent in-order and the first day is always the
+        // current day, we're going to take advantage of that to get a nice
+        // normalized UTC date for all of our weather.
+
+        Time dayTime = new Time();
+        dayTime.setToNow();
+
+        // we start at the day returned by local time. Otherwise this is a mess.
+        int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
+
+        // now we work exclusively in UTC
+        dayTime = new Time();
+
+
+        int inserted = 0;
+        // add to database
+        if (cVVector.size() > 0) {
+            ContentValues[] cvArray = new ContentValues[cVVector.size()];
+            cVVector.toArray(cvArray);
+            context.getContentResolver().bulkInsert(PropertyContract.ImageEntry.CONTENT_URI, cvArray);
+
+            // delete old data so we don't build up an endless history
+            context.getContentResolver().delete(PropertyContract.PropertyEntry.CONTENT_URI,
+                    PropertyContract.PropertyEntry.COLUMN_DATE + " <= ?",
+                    new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - PropertyPriceSyncAdapter.NUM_DAYS_TO_CLEANUP))});
+
+        }
+
+        Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
 
     }
 

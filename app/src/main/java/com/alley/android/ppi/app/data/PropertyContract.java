@@ -21,7 +21,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Defines table and column names for the weather database.
+ * Defines table and column names for the property database.
  */
 public class PropertyContract {
 
@@ -42,6 +42,7 @@ public class PropertyContract {
     // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
     public static final String PATH_PROPERTY = "property";
     public static final String PATH_LOCATION = "location";
+    public static final String PATH_IMAGE = "image";
 
     /* Inner class that defines the table contents of the location table */
     public static final class LocationEntry implements BaseColumns {
@@ -160,12 +161,12 @@ public class PropertyContract {
     public static final class ImageEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_LOCATION).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_IMAGE).build();
 
         public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LOCATION;
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE;
         public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LOCATION;
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE;
 
         public static final String TABLE_NAME = "image";
 
@@ -174,9 +175,11 @@ public class PropertyContract {
 
         public static final String COLUMN_PHOTO = "photo";
 
+        public static final String COLUMN_ADDRESS = "address";
+
         public static final String COLUMN_IS_PRIMARY = "is_primary";
 
-        public static Uri buildLocationUri(long id) {
+        public static Uri buildImageUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
