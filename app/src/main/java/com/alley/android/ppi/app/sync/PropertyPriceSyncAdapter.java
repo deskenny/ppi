@@ -407,7 +407,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 // Last sync was more than 1 day ago, let's send a notification with the weather.
                 String locationQuery = Utility.getPreferredLocation(context);
 
-                Uri weatherUri = PropertyContract.PropertyEntry.buildWeatherLocation(locationQuery);
+                Uri weatherUri = PropertyContract.PropertyEntry.buildPropertyLocation(locationQuery);
 
                 // we'll query our contentProvider, as always
                 Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_PPI_PROJECTION, null, null, null);

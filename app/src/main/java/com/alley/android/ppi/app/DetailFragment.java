@@ -186,7 +186,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         Uri uri = mUri;
         if (null != uri) {
             String address = PropertyContract.PropertyEntry.getAddressFromUri(uri);
-            Uri updatedUri = PropertyContract.PropertyEntry.buildWeatherLocationWithAddress(newLocation, address);
+            Uri updatedUri = PropertyContract.PropertyEntry.buildPropertyWithAddress(address);
             mUri = updatedUri;
             getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }

@@ -212,8 +212,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
                     ((Callback) getActivity())
-                            .onItemSelected(PropertyContract.PropertyEntry.buildWeatherLocationWithAddress(
-                                    locationSetting, cursor.getString(COL_DESCRIPTION)
+                            .onItemSelected(PropertyContract.PropertyEntry.buildPropertyWithAddress(cursor.getString(COL_DESCRIPTION)
                             ));
                 }
                 mPosition = position;
@@ -367,6 +366,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                 // Log.e(LOG_TAG, "Camera was null - ");
                 return;
             }
+            mMap.clear();
             int cursorCount = cursor.getCount();
             Log.i(LOG_TAG, "After movetoFirst Cursor had " + cursor.getCount() + " entries, current position" + cursor.getPosition());
             LatLng house = null;
@@ -424,7 +424,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             String location = snippet.substring(0, snippet.indexOf("/"));
 
             ((Callback) getActivity())
-                    .onItemSelected(PropertyContract.PropertyEntry.buildWeatherLocationWithAddress(location, address));
+                    .onItemSelected(PropertyContract.PropertyEntry.buildPropertyWithAddress(address));
         }
         return true;
     }

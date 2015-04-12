@@ -31,8 +31,8 @@ public class TestPropertyContract extends AndroidTestCase {
     private static final long TEST_PPI_DATE = 1419033600L;  // December 20th, 2014
 
     public void testBuildWeatherLocation() {
-        Uri locationUri = PropertyContract.PropertyEntry.buildWeatherLocation(TEST_PPI_LOCATION);
-        assertNotNull("Error: Null Uri returned.  You must fill-in buildWeatherLocation in " +
+        Uri locationUri = PropertyContract.PropertyEntry.buildPropertyLocation(TEST_PPI_LOCATION);
+        assertNotNull("Error: Null Uri returned.  You must fill-in buildPropertyLocation in " +
                         "WeatherContract.",
                 locationUri);
         assertEquals("Error: Weather location not properly appended to the end of the Uri",

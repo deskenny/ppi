@@ -54,19 +54,17 @@ public class PropertyProvider extends ContentProvider {
 
     //location.location_setting = ?
     private static final String sLocationSettingSelection =
-            PropertyContract.LocationEntry.TABLE_NAME+
-                    "." + PropertyContract.LocationEntry.COLUMN_SEARCH_STRING_USED + " = ? ";
+            PropertyContract.PropertyEntry.TABLE_NAME+
+                    "." + PropertyContract.PropertyEntry.COLUMN_ADDRESS + " like ? ";
 
     //location.location_setting = ? AND date >= ?
     private static final String sLocationSettingWithStartDateSelection =
-            PropertyContract.LocationEntry.TABLE_NAME+
-                    "." + PropertyContract.LocationEntry.COLUMN_SEARCH_STRING_USED + " = ? AND " +
+            PropertyContract.PropertyEntry.TABLE_NAME+
+                    "." + PropertyContract.PropertyEntry.COLUMN_ADDRESS + " like ? AND " +
                     PropertyContract.PropertyEntry.COLUMN_DATE + " >= ? ";
 
     //location.location_setting = ? AND date = ?
-    private static final String sLocationSettingAndAddressSelection =
-            PropertyContract.LocationEntry.TABLE_NAME +
-                    "." + PropertyContract.LocationEntry.COLUMN_SEARCH_STRING_USED + " = ? AND " +
+    private static final String sAddressSelection =
                     PropertyContract.PropertyEntry.COLUMN_ADDRESS + " = ? ";
 
     private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
@@ -78,9 +76,9 @@ public class PropertyProvider extends ContentProvider {
 
         if (startDate == 0) {
             selection = sLocationSettingSelection;
-            selectionArgs = new String[]{locationSetting};
+            selectionArgs = new String[]{"%" +locationSetting + "%"};
         } else {
-            selectionArgs = new String[]{locationSetting, Long.toString(startDate)};
+            selectionArgs = new String[]{"%" +locationSetting + "%", Long.toString(startDate)};
             selection = sLocationSettingWithStartDateSelection;
         }
 
@@ -94,15 +92,14 @@ public class PropertyProvider extends ContentProvider {
         );
     }
 
-    private Cursor getPropertyByLocationSettingAndAddress(
+    private Cursor getPropertyByAddress(
             Uri uri, String[] projection, String sortOrder) {
-        String locationSetting = PropertyContract.PropertyEntry.getLocationSettingFromUri(uri);
         String address = PropertyContract.PropertyEntry.getAddressFromUri(uri);
 
         return sWeatherByLocationSettingQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
-                sLocationSettingAndAddressSelection,
-                new String[]{locationSetting, address},
+                sAddressSelection,
+                new String[]{address},
                 null,
                 null,
                 sortOrder
@@ -176,7 +173,7 @@ public class PropertyProvider extends ContentProvider {
             // "property/*/*"
             case PROPERTY_WITH_LOCATION_AND_ADDRESS:
             {
-                retCursor = getPropertyByLocationSettingAndAddress(uri, projection, sortOrder);
+                retCursor = getPropertyByAddress(uri, projection, sortOrder);
                 break;
             }
             // "property/*"
@@ -231,7 +228,7 @@ public class PropertyProvider extends ContentProvider {
             case PROPERTY: {
                 long _id = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
-                    returnUri = PropertyContract.PropertyEntry.buildWeatherUri(_id);
+                    returnUri = PropertyContract.PropertyEntry.buildLocationUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;

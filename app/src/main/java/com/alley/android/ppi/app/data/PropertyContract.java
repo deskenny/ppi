@@ -119,11 +119,11 @@ public class PropertyContract {
         // Longtitude is stored as a float representing location
         public static final String COLUMN_LONGTITUDE = "longtitude";
 
-        public static Uri buildWeatherUri(long id) {
+        public static Uri buildLocationUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildWeatherLocation(String locationSetting) {
+        public static Uri buildPropertyLocation(String locationSetting) {
             return CONTENT_URI.buildUpon().appendPath(locationSetting).build();
         }
 
@@ -134,8 +134,8 @@ public class PropertyContract {
                     .appendQueryParameter(COLUMN_DATE, Long.toString(normalizedDate)).build();
         }
 
-        public static Uri buildWeatherLocationWithAddress(String locationSetting, String address) {
-            return CONTENT_URI.buildUpon().appendPath(locationSetting)
+        public static Uri buildPropertyWithAddress(String address) {
+            return CONTENT_URI.buildUpon().appendPath("doesntmatter")
                     .appendPath(address).build();
         }
 
