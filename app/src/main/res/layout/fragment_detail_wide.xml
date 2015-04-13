@@ -16,7 +16,6 @@
             android:minWidth="56dp"
             android:orientation="vertical" >
 
-            <!-- Header: Day, Date -->
             <TextView
                 android:fontFamily="sans-serif-condensed"
                 android:id="@+id/detail_day_textview"
@@ -35,7 +34,7 @@
 
         </LinearLayout>
 
-        <!-- Main content: high, low, art, weather state -->
+
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -49,7 +48,6 @@
                 android:layout_width="wrap_content"
                 android:textSize="96sp" />
 
-            <!-- Humidity, wind, pressure -->
             <TextView
                 android:fontFamily="sans-serif-condensed"
                 android:id="@+id/detail_num_beds_textview"
@@ -65,14 +63,6 @@
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:textAppearance="?android:textAppearanceLarge" />
-
-            <ImageView
-                android:id="@+id/main_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="#000000"
-                android:padding="1dp" />
 
 
         </LinearLayout>

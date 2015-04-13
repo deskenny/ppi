@@ -35,7 +35,8 @@ public class PropertyProvider extends ContentProvider {
     static final int PROPERTY_WITH_LOCATION = 101;
     static final int PROPERTY_WITH_LOCATION_AND_ADDRESS = 102;
     static final int LOCATION = 300;
-    static final int IMAGE_BY_PROPERTY = 400;
+    static final int IMAGE = 400;
+    static final int IMAGE_BY_PROPERTY = 401;
 
     private static final SQLiteQueryBuilder sPropertyByLocationSettingQueryBuilder;
     private static final SQLiteQueryBuilder sImageByAddressQueryBuilder;
@@ -54,13 +55,9 @@ public class PropertyProvider extends ContentProvider {
                         " = " + PropertyContract.LocationEntry.TABLE_NAME +
                         "." + PropertyContract.LocationEntry._ID);
 
+
         sImageByAddressQueryBuilder.setTables(
-                PropertyContract.ImageEntry.TABLE_NAME + " INNER JOIN " +
-                        PropertyContract.PropertyEntry.TABLE_NAME +
-                        " ON " + PropertyContract.ImageEntry.TABLE_NAME +
-                        "." + PropertyContract.ImageEntry.COLUMN_PROPERTY_KEY +
-                        " = " + PropertyContract.PropertyEntry.TABLE_NAME +
-                        "." + PropertyContract.PropertyEntry._ID);
+                PropertyContract.ImageEntry.TABLE_NAME);
 
     }
 
@@ -77,7 +74,10 @@ public class PropertyProvider extends ContentProvider {
 
     //location.location_setting = ? AND date = ?
     private static final String sAddressSelection =
-                    PropertyContract.PropertyEntry.COLUMN_ADDRESS + " = ? ";
+            PropertyContract.PropertyEntry.COLUMN_ADDRESS + " = ? ";
+
+    private static final String sImageAddressSelection =
+            PropertyContract.ImageEntry.TABLE_NAME + "." + PropertyContract.ImageEntry.COLUMN_ADDRESS + " = ? ";
 
 //    private static final String sImageSelection =
 //            PropertyContract.PropertyEntry.COLUMN_ADDRESS + " = ? ";
@@ -124,11 +124,11 @@ public class PropertyProvider extends ContentProvider {
 
     private Cursor getImageByAddress(
             Uri uri, String[] projection, String sortOrder) {
-        String address = PropertyContract.PropertyEntry.getAddressFromUri(uri);
+        String address = PropertyContract.ImageEntry.getAddressFromUri(uri);
 
         return sImageByAddressQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
-                sAddressSelection,
+                sImageAddressSelection,
                 new String[]{address},
                 null,
                 null,
@@ -156,7 +156,9 @@ public class PropertyProvider extends ContentProvider {
         matcher.addURI(authority, PropertyContract.PATH_PROPERTY, PROPERTY);
         matcher.addURI(authority, PropertyContract.PATH_PROPERTY + "/*", PROPERTY_WITH_LOCATION);
         matcher.addURI(authority, PropertyContract.PATH_PROPERTY + "/*/*", PROPERTY_WITH_LOCATION_AND_ADDRESS);
-        matcher.addURI(authority, PropertyContract.PATH_PROPERTY + "/*/*/*", IMAGE_BY_PROPERTY);
+
+        matcher.addURI(authority, PropertyContract.PATH_IMAGE, IMAGE);
+        matcher.addURI(authority, PropertyContract.PATH_IMAGE + "/*", IMAGE_BY_PROPERTY);
 
         matcher.addURI(authority, PropertyContract.PATH_LOCATION, LOCATION);
         return matcher;
@@ -179,7 +181,6 @@ public class PropertyProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            // Student: Uncomment and fill out these two cases
             case PROPERTY_WITH_LOCATION_AND_ADDRESS:
                 return PropertyContract.PropertyEntry.CONTENT_ITEM_TYPE;
             case PROPERTY_WITH_LOCATION:
@@ -188,6 +189,8 @@ public class PropertyProvider extends ContentProvider {
                 return PropertyContract.PropertyEntry.CONTENT_TYPE;
             case LOCATION:
                 return PropertyContract.LocationEntry.CONTENT_TYPE;
+            case IMAGE:
+                return PropertyContract.ImageEntry.CONTENT_TYPE;
             case IMAGE_BY_PROPERTY:
                 return PropertyContract.ImageEntry.CONTENT_TYPE;
             default:
@@ -198,8 +201,6 @@ public class PropertyProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        // Here's the switch statement that, given a URI, will determine what kind of request it is,
-        // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
 
@@ -247,6 +248,19 @@ public class PropertyProvider extends ContentProvider {
                 break;
             }
 
+            case IMAGE: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        PropertyContract.ImageEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -264,6 +278,14 @@ public class PropertyProvider extends ContentProvider {
         Uri returnUri;
         Log.i(LOG_TAG, "Uri:" + uri);
         switch (match) {
+            case IMAGE: {
+                long _id = db.insert(PropertyContract.ImageEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = PropertyContract.ImageEntry.buildImageUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             case PROPERTY: {
                 long _id = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )

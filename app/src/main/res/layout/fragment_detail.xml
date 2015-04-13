@@ -65,7 +65,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Humidity, wind, square area -->
         <LinearLayout
             android:layout_height="match_parent"
             android:layout_marginRight="0dp"
@@ -86,13 +85,12 @@
                 android:layout_width="match_parent"
                 android:textAppearance="?android:textAppearanceLarge" />
 
-            <ImageView
-                android:id="@+id/main_image"
-                android:layout_width="wrap_content"
+            <ListView
+                style="@style/ForecastListStyle"
+                android:id="@+id/listview_detail_images"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="#000000"
-                android:padding="1dp" />
+                android:divider="@null" />
 
             <TextView
                 android:id="@+id/detail_title_description_textview"

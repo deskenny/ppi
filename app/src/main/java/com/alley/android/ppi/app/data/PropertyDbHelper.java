@@ -46,13 +46,9 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_IMAGE_TABLE = "CREATE TABLE " + PropertyContract.ImageEntry.TABLE_NAME + " (" +
                 PropertyContract.ImageEntry._ID + " INTEGER PRIMARY KEY," +
-                PropertyContract.ImageEntry.COLUMN_PROPERTY_KEY + " INTEGER, " +
                 PropertyContract.ImageEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
                 PropertyContract.ImageEntry.COLUMN_PHOTO + " BLOB NOT NULL," +
-                PropertyContract.ImageEntry.COLUMN_IS_PRIMARY + " BOOLEAN DEFAULT FALSE, " +
-
-                " FOREIGN KEY (" + PropertyContract.ImageEntry.COLUMN_PROPERTY_KEY + ") REFERENCES " +
-                PropertyContract.PropertyEntry.TABLE_NAME + " (" + PropertyContract.PropertyEntry._ID + "));";
+                PropertyContract.ImageEntry.COLUMN_IS_PRIMARY + " BOOLEAN DEFAULT FALSE );";
 
 
         final String SQL_CREATE_PROPERTY_TABLE = "CREATE TABLE " + PropertyContract.PropertyEntry.TABLE_NAME + " (" +
@@ -75,11 +71,7 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
                 PropertyContract.PropertyEntry.COLUMN_PROPERTY_PRICE_REGISTER_URL + " TEXT, " +
                 PropertyContract.PropertyEntry.COLUMN_BROCHURE_READ_ATTEMPTED + " BOOLEAN DEFAULT FALSE, " +
                 PropertyContract.PropertyEntry.COLUMN_BROCHURE_SUCCESS + " BOOLEAN DEFAULT FALSE, " +
-
-
                 PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID + " INTEGER DEFAULT 0," +
-                PropertyContract.PropertyEntry.COLUMN_MAIN_PHOTO + " BLOB NULL," +
-
                 PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE + " REAL DEFAULT 0, " +
                 PropertyContract.PropertyEntry.COLUMN_PRICE + " REAL NOT NULL, " +
 

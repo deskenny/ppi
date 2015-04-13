@@ -34,9 +34,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alley.android.ppi.app.data.PropertyContract;
+
+import java.sql.Blob;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -50,9 +53,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private ShareActionProvider mShareActionProvider;
     private String mForecast;
-    private Uri mUri;
+    private Uri mDetailUri;
+    private Uri mDetailImageUri;
 
     private static final int DETAIL_LOADER = 0;
+    private static final int DETAIL_IMAGE_LOADER = 1;
 
     private static final String[] DETAIL_COLUMNS = {
             PropertyContract.PropertyEntry.TABLE_NAME + "." + PropertyContract.PropertyEntry._ID,
@@ -69,13 +74,21 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             PropertyContract.PropertyEntry.COLUMN_HEADER_FEATURES,
             PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION,
             PropertyContract.PropertyEntry.COLUMN_BER_DETAILS,
-            PropertyContract.PropertyEntry.COLUMN_MAIN_PHOTO,
             PropertyContract.PropertyEntry.COLUMN_BROCHURE_SUCCESS,
 
-            // This works because the WeatherProvider returns location data joined with
-            // weather data, even though they're stored in two different tables.
+            // This works because the PropertyProvider returns location data joined with
+            // property data, even though they're stored in two different tables.
             PropertyContract.LocationEntry.COLUMN_SEARCH_STRING_USED
     };
+
+    private static final String[] IMAGE_COLUMNS = {
+            PropertyContract.ImageEntry.TABLE_NAME + "." + PropertyContract.ImageEntry._ID,
+            PropertyContract.ImageEntry.COLUMN_IS_PRIMARY,
+            PropertyContract.ImageEntry.COLUMN_PHOTO
+    };
+
+    public static final int COL_IS_PRIMARY = 1;
+    public static final int COL_PHOTO = 2;
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
     // must change.
@@ -93,10 +106,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_HEADER_FEATURES = 11;
     public static final int COLUMN_ACCOMMODATION = 12;
     public static final int COLUMN_BER = 13;
-    public static final int COLUMN_MAIN_PHOTO = 14;
-    public static final int COLUMN_BROCHURE_SUCCESS = 15;
+    public static final int COLUMN_BROCHURE_SUCCESS = 14;
 
-    public static final int COL_LOCATION_SETTING = 16;
+    public static final int COL_LOCATION_SETTING = 15;
 
     private ImageView mIconView;
     private TextView mDateView;
@@ -108,12 +120,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mFeaturesDescription;
     private TextView mAccommodation;
     private TextView mBer;
-    private ImageView mMainImage;
 
     private TextView mTitleDescription;
     private TextView mTitleFeatures;
     private TextView mTitleAccommodation;
     private TextView mTitleBer;
+    private ListView mImages;
+    private DetailImageAdapter mImageAdapter;
+    private ListView mListView;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -123,9 +137,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        mImageAdapter = new DetailImageAdapter(getActivity(), null, 0);
+
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+            mDetailUri = arguments.getParcelable(DetailFragment.DETAIL_URI);
+            String address = PropertyContract.PropertyEntry.getAddressFromUri(mDetailUri);
+            mDetailImageUri = PropertyContract.ImageEntry.buildImageUriFromAddress(address);;
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -139,13 +157,16 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mFeaturesDescription = (TextView) rootView.findViewById(R.id.detail_features_textview);
         mAccommodation = (TextView) rootView.findViewById(R.id.detail_accommodation_textview);
         mBer = (TextView) rootView.findViewById(R.id.detail_ber_textview);
-        mMainImage = (ImageView) rootView.findViewById(R.id.main_image);
 
 
         mTitleDescription = (TextView) rootView.findViewById(R.id.detail_title_description_textview);
         mTitleFeatures = (TextView) rootView.findViewById(R.id.detail_title_features_textview);
         mTitleAccommodation = (TextView) rootView.findViewById(R.id.detail_title_accommodation_textview);
         mTitleBer = (TextView) rootView.findViewById(R.id.detail_title_ber_textview);
+
+        // Get a reference to the ListView, and attach this adapter to it.
+        mListView = (ListView) rootView.findViewById(R.id.listview_detail_images);
+        mListView.setAdapter(mImageAdapter);
 
         return rootView;
     }
@@ -178,39 +199,65 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        getLoaderManager().initLoader(DETAIL_IMAGE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     void onLocationChanged( String newLocation ) {
         // replace the uri, since the location has changed
-        Uri uri = mUri;
+        Uri uri = mDetailUri;
         if (null != uri) {
             String address = PropertyContract.PropertyEntry.getAddressFromUri(uri);
-            Uri updatedUri = PropertyContract.PropertyEntry.buildPropertyWithAddress(address);
-            mUri = updatedUri;
+            mDetailUri = PropertyContract.PropertyEntry.buildPropertyWithAddress(address);
+            mDetailImageUri = PropertyContract.ImageEntry.buildImageUriFromAddress(address);;
             getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+            getLoaderManager().restartLoader(DETAIL_IMAGE_LOADER, null, this);
         }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if ( null != mUri ) {
+        if ( null != mDetailUri) {
             // Now create and return a CursorLoader that will take care of
             // creating a Cursor for the data being displayed.
-            return new CursorLoader(
-                    getActivity(),
-                    mUri,
-                    DETAIL_COLUMNS,
-                    null,
-                    null,
-                    null
-            );
+            if (id == DETAIL_LOADER) {
+                return new CursorLoader(
+                        getActivity(),
+                        mDetailUri,
+                        DETAIL_COLUMNS,
+                        null,
+                        null,
+                        null
+                );
+            }
+            else if (id == DETAIL_IMAGE_LOADER)  {
+                return new CursorLoader(
+                        getActivity(),
+                        mDetailImageUri,
+                        IMAGE_COLUMNS,
+                        null,
+                        null,
+                        null
+                );
+            }
         }
         return null;
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (loader.getId() == DETAIL_LOADER) {
+            onLoadFinishedDetail(loader, cursor);
+        } else {
+            onLoadFinishedImages(loader, cursor);
+        }
+    }
+
+    public void onLoadFinishedImages(Loader<Cursor> loader, Cursor cursor) {
+        mImageAdapter.swapCursor(cursor);
+    }
+
+    public void onLoadFinishedDetail(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
             // Read weather condition ID from cursor
             int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
@@ -259,12 +306,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String ber = data.getString(COLUMN_BER);
             mBer.setText(ber);
 
-            byte [] imageBytes = data.getBlob(COLUMN_MAIN_PHOTO);
-            if (imageBytes != null) {
-                Bitmap bm = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-                mMainImage.setImageBitmap(bm);
-            }
-
             // We still need this for the share intent
             mForecast = String.format("%s - %s - %s/%s", dateText, description, price, price);
 
@@ -289,7 +330,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mFeaturesDescription.setVisibility(visibility);
         mAccommodation.setVisibility(visibility);
         mBer.setVisibility(visibility);
-        mMainImage.setVisibility(visibility);
+        mListView.setVisibility(visibility);
 
         if (mTitleDescription != null) {
             mTitleDescription.setVisibility(visibility);
@@ -306,5 +347,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) { }
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if (loader.getId() == DETAIL_LOADER) {
+            mImageAdapter.swapCursor(null);
+        }
+    }
 }

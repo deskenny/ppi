@@ -102,8 +102,6 @@ public class PropertyContract {
         public static final String COLUMN_MY_HOME_BROCHURE_URL = "my_home_url";
         public static final String COLUMN_PROPERTY_PRICE_REGISTER_URL = "ppr_url";
 
-        public static final String COLUMN_MAIN_PHOTO = "main_photo";
-
         // Min and max temperatures for the day (stored as floats)
         public static final String COLUMN_BROCHURE_PRICE = "brochure_price";
         public static final String COLUMN_PRICE = "price";
@@ -170,9 +168,6 @@ public class PropertyContract {
 
         public static final String TABLE_NAME = "image";
 
-        // Column with the foreign key into the location table.
-        public static final String COLUMN_PROPERTY_KEY = "property_id";
-
         public static final String COLUMN_PHOTO = "photo";
 
         public static final String COLUMN_ADDRESS = "address";
@@ -181,6 +176,14 @@ public class PropertyContract {
 
         public static Uri buildImageUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildImageUriFromAddress(String address) {
+            return CONTENT_URI.buildUpon().appendPath(address).build();
+        }
+
+        public static String getAddressFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
         }
     }
 }

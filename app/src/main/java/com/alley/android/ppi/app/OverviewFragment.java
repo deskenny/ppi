@@ -65,7 +65,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     private GoogleMap mMap = null;
 
-    private static final int FORECAST_TOP_LEVEL_LOADER = 0;
+    private static final int PROPERTY_TOP_LEVEL_LOADER = 0;
 
     private float latitude = 0;
     private float longitude = 0;
@@ -237,14 +237,14 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(FORECAST_TOP_LEVEL_LOADER, null, this);
+        getLoaderManager().initLoader(PROPERTY_TOP_LEVEL_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     // since we read the location when we create the loader, all we need to do is restart things
     void onLocationChanged() {
         updateWeather();
-        getLoaderManager().restartLoader(FORECAST_TOP_LEVEL_LOADER, null, this);
+        getLoaderManager().restartLoader(PROPERTY_TOP_LEVEL_LOADER, null, this);
         Log.i(OverviewFragment.LOG_TAG, "setting refreshing to true from onLocationChanged");
         //mRefreshLayout.setRefreshing(true);
     }
@@ -315,7 +315,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
-        if (loader.getId() == FORECAST_TOP_LEVEL_LOADER) {
+        if (loader.getId() == PROPERTY_TOP_LEVEL_LOADER) {
             Toast.makeText(getActivity(), "Staring refresh of properties", Toast.LENGTH_LONG);
         }
 

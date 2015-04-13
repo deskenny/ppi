@@ -64,23 +64,18 @@ public class MyHomeAdapterHelper {
     }
 
     private void storeImages(Document doc, ContentValues propertyValues, Context context) throws JSONException {
-        boolean first = true;
         Vector<ContentValues> cVVectorImages = new Vector<ContentValues>();
-        Elements elements = doc.select("img[class=\"colorboxGallery replaceIfBroke\"]");
+        Elements elements = doc.select("img.colorboxGallery");
+        boolean first = true;
         for (Element element : elements) {
             String imageSrc = element.absUrl("src");
             byte[] bytes = getBitmap(imageSrc);
-            if (first) {
-                propertyValues.put(PropertyContract.PropertyEntry.COLUMN_MAIN_PHOTO, bytes);
-                first = false;
-            }
-            else {
-                ContentValues values = new ContentValues();
-                values.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, (String) propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS));
-                values.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, first);
-                values.put(PropertyContract.ImageEntry.COLUMN_PHOTO, bytes);
-                cVVectorImages.add(values);
-            }
+            ContentValues values = new ContentValues();
+            values.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, (String) propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS));
+            values.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, first);
+            values.put(PropertyContract.ImageEntry.COLUMN_PHOTO, bytes);
+            cVVectorImages.add(values);
+            first = false;
         }
         addImages(cVVectorImages, context);
 
