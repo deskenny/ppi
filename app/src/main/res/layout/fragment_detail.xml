@@ -72,25 +72,10 @@
             android:layout_width="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/detail_num_beds_textview"
-                android:layout_height="wrap_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/cardList"
                 android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/detail_square_area_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <ListView
-                style="@style/ForecastListStyle"
-                android:id="@+id/listview_detail_images"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@null" />
+                android:layout_height="200dp"/>
 
             <TextView
                 android:id="@+id/detail_title_description_textview"

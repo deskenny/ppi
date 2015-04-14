@@ -68,14 +68,16 @@ public class MyHomeAdapterHelper {
         Elements elements = doc.select("img.colorboxGallery");
         boolean first = true;
         for (Element element : elements) {
-            String imageSrc = element.absUrl("src");
+            String imageSrc = element.absUrl("longdesc");
             byte[] bytes = getBitmap(imageSrc);
-            ContentValues values = new ContentValues();
-            values.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, (String) propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS));
-            values.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, first);
-            values.put(PropertyContract.ImageEntry.COLUMN_PHOTO, bytes);
-            cVVectorImages.add(values);
-            first = false;
+            if (bytes != null) {
+                ContentValues values = new ContentValues();
+                values.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, (String) propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS));
+                values.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, first);
+                values.put(PropertyContract.ImageEntry.COLUMN_PHOTO, bytes);
+                cVVectorImages.add(values);
+                first = false;
+            }
         }
         addImages(cVVectorImages, context);
 

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,50 +16,38 @@ import android.widget.TextView;
  * {@link com.alley.android.ppi.app.DetailImageAdapter} exposes a list of weather forecasts
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
  */
-public class DetailImageAdapter extends CursorAdapter {
+public class DetailImageAdapter extends CursorRecyclerViewAdapter<DetailImageAdapter.ViewHolder>{
 
-    public static class ViewHolder {
-        public final ImageView iconView;
 
+    public DetailImageAdapter(Context context,Cursor cursor){
+        super(context,cursor);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView mImageView;
         public ViewHolder(View view) {
-            iconView = (ImageView) view.findViewById(R.id.list_item_icon);
+            super(view);
+            mImageView = (ImageView) view.findViewById(R.id.list_item_image);
         }
     }
 
-    public DetailImageAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item_image, parent, false);
+        ViewHolder vh = new ViewHolder(itemView);
+        return vh;
     }
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        // Choose the layout type
-        int viewType = getItemViewType(cursor.getPosition());
-        int layoutId = R.layout.list_item_image;
+    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
+        MyListItem myListItem = MyListItem.fromCursor(cursor);
+        //            viewHolder.iconView.setImageBitmap(bm);
+//
 
-        View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
-
-        ViewHolder viewHolder = new ViewHolder(view);
-        view.setTag(viewHolder);
-
-        return view;
+        viewHolder.mImageView.setImageBitmap(myListItem.getBitmap());
+        viewHolder.mImageView.setContentDescription(myListItem.getDescription());
     }
 
-    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
-        // For accessibility, add a content description to the icon field
-        byte [] photo = cursor.getBlob(DetailFragment.COL_PHOTO);
-        if (photo != null) {
-            Bitmap bm = BitmapFactory.decodeByteArray(photo, 0, photo.length);
-            viewHolder.iconView.setImageBitmap(bm);
-            viewHolder.iconView.setContentDescription("House image " + cursor.getPosition());
-        }
-
-    }
-
-
-    @Override
-    public int getViewTypeCount() {
-        return 1;
-    }
 }
+

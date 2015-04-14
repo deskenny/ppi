@@ -5,41 +5,50 @@
     android:fillViewport="true">
 
     <LinearLayout
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:padding="16dp" >
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cardList"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="top" />
 
         <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:minWidth="56dp"
-            android:orientation="vertical" >
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_day_textview"
+            <ImageView
+                android:id="@+id/detail_icon"
                 android:layout_height="wrap_content"
-                android:minWidth="120dp"
-                android:layout_width="wrap_content"
-                android:textSize="24sp" />
+                android:layout_width="wrap_content" />
 
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_date_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textColor="@color/grey_700"
-                android:textSize="20sp" />
+            <LinearLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </LinearLayout>
+                <TextView
+                    android:fontFamily="sans-serif-condensed"
+                    android:id="@+id/detail_date_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/grey_700"
+                    android:textSize="20sp" />
 
-
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_width="wrap_content"
-            android:orientation="vertical">
+                <TextView
+                    android:fontFamily="sans-serif-condensed"
+                    android:id="@+id/detail_address_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/grey_700"
+                    android:textAppearance="?android:textAppearanceLarge" />
+            </LinearLayout>
 
             <TextView
                 android:fontFamily="sans-serif-light"
@@ -47,107 +56,69 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textSize="96sp" />
-
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_num_beds_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_square_area_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-
         </LinearLayout>
 
-        <LinearLayout
-            android:gravity="center_horizontal"
+        <TextView
+            android:id="@+id/detail_content_description_textview"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_width="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/grey_700"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-condensed" />
 
-            <ImageView
-                android:id="@+id/detail_icon"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
-
-            <TextView
-                android:fontFamily="sans-serif-condensed"
-                android:id="@+id/detail_address_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textColor="@color/grey_700"
-                android:textAppearance="?android:textAppearanceLarge"/>
-
-            <TextView
-                android:id="@+id/detail_content_description_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textColor="@color/grey_700"
-                android:textSize="16sp"
-                android:fontFamily="sans-serif-condensed"/>
-
-            <TextView
-                android:id="@+id/detail_title_features_textview"
-                android:layout_height="wrap_content"
-                android:text="@string/features"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/detail_features_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textColor="@color/grey_700"
-                android:textSize="16sp"
-                android:fontFamily="sans-serif-condensed"/>
-
-            <TextView
-                android:id="@+id/detail_title_accommodation_textview"
-                android:layout_height="wrap_content"
-                android:text="@string/accommodation"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
-
-            <TextView
-                android:id="@+id/detail_accommodation_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textColor="@color/grey_700"
-                android:textSize="16sp"
-                android:fontFamily="sans-serif-condensed"/>
+        <TextView
+            android:id="@+id/detail_title_features_textview"
+            android:layout_height="wrap_content"
+            android:text="@string/features"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textAppearance="?android:textAppearanceLarge" />
 
 
-            <TextView
-                android:id="@+id/detail_title_ber_textview"
-                android:layout_height="wrap_content"
-                android:text="@string/ber"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textAppearance="?android:textAppearanceLarge" />
+        <TextView
+            android:id="@+id/detail_features_textview"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/grey_700"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-condensed" />
 
-            <TextView
-                android:id="@+id/detail_ber_textview"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_width="match_parent"
-                android:textColor="@color/grey_700"
-                android:textSize="16sp"
-                android:fontFamily="sans-serif-condensed"/>
+        <TextView
+            android:id="@+id/detail_title_accommodation_textview"
+            android:layout_height="wrap_content"
+            android:text="@string/accommodation"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textAppearance="?android:textAppearanceLarge" />
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/detail_accommodation_textview"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/grey_700"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-condensed" />
+
+
+        <TextView
+            android:id="@+id/detail_title_ber_textview"
+            android:layout_height="wrap_content"
+            android:text="@string/ber"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textAppearance="?android:textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/detail_ber_textview"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textColor="@color/grey_700"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-condensed" />
+
     </LinearLayout>
 </ScrollView>

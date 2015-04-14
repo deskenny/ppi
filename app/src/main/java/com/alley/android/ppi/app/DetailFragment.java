@@ -26,6 +26,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -114,8 +116,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mDateView;
     private TextView mDescriptionView;
     private TextView mPriceView;
-    private TextView mNumBedsView;
-    private TextView mSquareArea;
     private TextView mContentDescription;
     private TextView mFeaturesDescription;
     private TextView mAccommodation;
@@ -125,9 +125,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mTitleFeatures;
     private TextView mTitleAccommodation;
     private TextView mTitleBer;
-    private ListView mImages;
-    private DetailImageAdapter mImageAdapter;
-    private ListView mListView;
+    private RecyclerView recList;
+    private DetailImageAdapter imageAdapter;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -136,8 +135,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        mImageAdapter = new DetailImageAdapter(getActivity(), null, 0);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -151,8 +148,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mDateView = (TextView) rootView.findViewById(R.id.detail_date_textview);
         mDescriptionView = (TextView) rootView.findViewById(R.id.detail_address_textview);
         mPriceView = (TextView) rootView.findViewById(R.id.detail_price_textview);
-        mNumBedsView = (TextView) rootView.findViewById(R.id.detail_num_beds_textview);
-        mSquareArea = (TextView) rootView.findViewById(R.id.detail_square_area_textview);
         mContentDescription = (TextView) rootView.findViewById(R.id.detail_content_description_textview);
         mFeaturesDescription = (TextView) rootView.findViewById(R.id.detail_features_textview);
         mAccommodation = (TextView) rootView.findViewById(R.id.detail_accommodation_textview);
@@ -165,8 +160,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mTitleBer = (TextView) rootView.findViewById(R.id.detail_title_ber_textview);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        mListView = (ListView) rootView.findViewById(R.id.listview_detail_images);
-        mListView.setAdapter(mImageAdapter);
+        recList = (RecyclerView) rootView.findViewById(R.id.cardList);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recList.setLayoutManager(llm);
+        imageAdapter = new DetailImageAdapter(this.getActivity(), null);
+        recList.setAdapter(imageAdapter);
 
         return rootView;
     }
@@ -254,7 +254,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     public void onLoadFinishedImages(Loader<Cursor> loader, Cursor cursor) {
-        mImageAdapter.swapCursor(cursor);
+        recList.setAdapter(new DetailImageAdapter(this.getActivity(), cursor));
     }
 
     public void onLoadFinishedDetail(Loader<Cursor> loader, Cursor data) {
@@ -262,6 +262,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             // Read weather condition ID from cursor
             int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
             int numberOfBeds = data.getInt(COL_NUM_BEDS);
+            float squareArea = data.getFloat(COL_SQUARE_AREA);
 
             // Use weather art image
             mIconView.setImageResource(Utility.getArtResourceForPropType(weatherId, numberOfBeds));
@@ -273,7 +274,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             // Read description from cursor and update view
             String description = data.getString(COL_WEATHER_DESC);
-            mDescriptionView.setText(description);
+            mDescriptionView.setText(description + " - " + numberOfBeds + " bed, " + squareArea + "m²");
 
             // For accessibility, add a content description to the icon field
             mIconView.setContentDescription(description);
@@ -282,16 +283,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String priceString = Utility.formatPrice(getActivity(), price);
             mPriceView.setText(priceString);
 
-            // Read number of beds from cursor and update view
-            mNumBedsView.setText(getActivity().getString(R.string.format_num_beds, numberOfBeds));
-
             // Read wind speed and direction from cursor and update view
             float latitude = data.getFloat(COL_LATITUDE);
             float windDirStr = data.getFloat(COL_LONGTITUDE);
-
-            // Read square area from cursor and update view
-            float squareArea = data.getFloat(COL_SQUARE_AREA);
-            mSquareArea.setText(getActivity().getString(R.string.format_square_area, squareArea));
 
             // read the description
             String contentDescription = data.getString(COL_CONTENT_DESCRIPTION);
@@ -324,13 +318,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     private void hideShowBrochureFields(int visibility) {
-        mNumBedsView.setVisibility(visibility);
-        mSquareArea.setVisibility(visibility);
         mContentDescription.setVisibility(visibility);
         mFeaturesDescription.setVisibility(visibility);
         mAccommodation.setVisibility(visibility);
         mBer.setVisibility(visibility);
-        mListView.setVisibility(visibility);
+        recList.setVisibility(visibility);
 
         if (mTitleDescription != null) {
             mTitleDescription.setVisibility(visibility);
@@ -348,8 +340,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (loader.getId() == DETAIL_LOADER) {
-            mImageAdapter.swapCursor(null);
+        if (loader.getId() == DETAIL_IMAGE_LOADER) {
+            recList.setAdapter(null);
         }
     }
 }

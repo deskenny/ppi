@@ -114,12 +114,6 @@
     <!-- Temperature format [CHAR LIMIT=5 -->
     <string name="format_temperature"><xliff:g id="temp">%1.0f</xliff:g>\u00B0</string>
 
-    <!-- Pressure format CHAR LIMIT=25] -->
-    <string name="format_square_area">Area: <xliff:g id="square_area">%1.0f</xliff:g> m²</string>
-
-    <!-- Number of Beds format CHAR LIMIT=25]-->
-    <string name="format_num_beds">Bedrooms: <xliff:g id="num_beds">%1$1d</xliff:g></string>
-
     <!-- SyncAdapter related -->
     <string name="sync_account_type">ppi.alley.com</string>
     <string name="content_authority">com.alley.android.ppi.app</string>

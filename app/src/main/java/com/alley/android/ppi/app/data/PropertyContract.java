@@ -85,7 +85,6 @@ public class PropertyContract {
         // Date, stored as long in milliseconds since the epoch
         public static final String COLUMN_DATE = "date";
 
-        // Weather id as returned by API, to identify the icon to be used
         public static final String COLUMN_PROP_TYPE_ID = "prop_type_id";
 
         public static final String COLUMN_ADDRESS = "address";
@@ -102,7 +101,6 @@ public class PropertyContract {
         public static final String COLUMN_MY_HOME_BROCHURE_URL = "my_home_url";
         public static final String COLUMN_PROPERTY_PRICE_REGISTER_URL = "ppr_url";
 
-        // Min and max temperatures for the day (stored as floats)
         public static final String COLUMN_BROCHURE_PRICE = "brochure_price";
         public static final String COLUMN_PRICE = "price";
 
