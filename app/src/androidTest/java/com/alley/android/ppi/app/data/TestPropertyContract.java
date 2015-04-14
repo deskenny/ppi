@@ -48,6 +48,6 @@ public class TestPropertyContract extends AndroidTestCase {
         //145 Kildare Roa' and '145 KILDARE RD,
 
         assertTrue(Utility.isMatchedAddress("187 Cashel Road", "187 CASHEL RD"));
-        assertTrue(Utility.isMatchedAddress("145 Kildare Roa","145 KILDARE RD,"));
+        assertTrue(Utility.isMatchedAddress("145 Kildare Road","145 KILDARE RD,"));
     }
 }

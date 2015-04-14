@@ -149,7 +149,7 @@ public class TestProvider extends AndroidTestCase {
         long testDate = 1419120000L; // December 21st, 2014
         // content://com.alley.android.ppi.app/weather/94074/20140612
         type = mContext.getContentResolver().getType(
-                PropertyContract.PropertyEntry.buildPropertyWithAddress(testLocation, "this,WOULD,be,a,test, address"));
+                PropertyContract.PropertyEntry.buildPropertyWithAddress("this,WOULD,be,a,test, address"));
         // vnd.android.cursor.item/com.alley.android.ppi.app/weather/1419120000
         assertEquals("Error: the WeatherEntry CONTENT_URI with location and date should return WeatherEntry.CONTENT_ITEM_TYPE",
                 PropertyContract.PropertyEntry.CONTENT_ITEM_TYPE, type);
@@ -382,7 +382,7 @@ public class TestProvider extends AndroidTestCase {
 
         // Get the joined Weather data for a specific date
         weatherCursor = mContext.getContentResolver().query(
-                PropertyContract.PropertyEntry.buildPropertyWithAddress(TestUtilities.TEST_LOCATION, TestUtilities.TEST_ADDRESS),
+                PropertyContract.PropertyEntry.buildPropertyWithAddress(TestUtilities.TEST_ADDRESS),
                 null,
                 null,
                 null,

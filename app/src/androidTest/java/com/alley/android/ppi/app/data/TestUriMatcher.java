@@ -27,7 +27,7 @@ public class TestUriMatcher extends AndroidTestCase {
     // content://com.alley.android.ppi.app/weather"
     private static final Uri TEST_WEATHER_DIR = PropertyContract.PropertyEntry.CONTENT_URI;
     private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = PropertyContract.PropertyEntry.buildPropertyLocation(LOCATION_QUERY);
-    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_ADDRESS_DIR = PropertyContract.PropertyEntry.buildPropertyWithAddress(LOCATION_QUERY, TEST_ADDRESS);
+    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_ADDRESS_DIR = PropertyContract.PropertyEntry.buildPropertyWithAddress(TEST_ADDRESS);
     // content://com.alley.android.ppi.app/location"
     private static final Uri TEST_LOCATION_DIR = PropertyContract.LocationEntry.CONTENT_URI;
 

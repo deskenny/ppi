@@ -61,6 +61,27 @@ public class MyHomeAdapterHelper {
         readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION, "contentAccommodation content3");
         readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_ADDRESS, "brochureAddress");
         storeImages(doc, propertyValues, context);
+        calculateClass(propertyValues);
+    }
+
+
+    private void calculateClass(ContentValues values) {
+        String description = (String) values.get(PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC);
+        if (description != null) {
+            if (description.contains("in need of modernisation")) {
+                values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 0);
+                return;
+            }
+            else if (description.contains("in need of some modernisation")) {
+                values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 0);
+                return;
+            }
+            else if (description.contains("excellent condition")) {
+                values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 5);
+                return;
+            }
+        }
+        values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 3);
     }
 
     private void storeImages(Document doc, ContentValues propertyValues, Context context) throws JSONException {
