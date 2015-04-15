@@ -27,6 +27,13 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content" />
 
+            <TextView
+                android:fontFamily="sans-serif-light"
+                android:id="@+id/detail_price_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="96sp" />
+
             <LinearLayout
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
@@ -35,28 +42,33 @@
 
                 <TextView
                     android:fontFamily="sans-serif-condensed"
-                    android:id="@+id/detail_date_textview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/grey_700"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:fontFamily="sans-serif-condensed"
                     android:id="@+id/detail_address_textview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textColor="@color/grey_700"
                     android:textAppearance="?android:textAppearanceLarge" />
+
+                <TextView
+                    android:id="@+id/detail_date_textview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/grey_700"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-condensed" />
+
+
             </LinearLayout>
 
-            <TextView
-                android:fontFamily="sans-serif-light"
-                android:id="@+id/detail_price_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textSize="96sp" />
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/detail_title_description_textview"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:textAppearance="?android:textAppearanceLarge" />
 
         <TextView
             android:id="@+id/detail_content_description_textview"

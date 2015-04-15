@@ -270,11 +270,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             // Read date from cursor and update views for day of week and date
             long date = data.getLong(COL_WEATHER_DATE);
             String dateText = Utility.getFormattedMonthDay(getActivity(), date);
-            mDateView.setText(dateText);
+            mDateView.setText(dateText  + " - " + numberOfBeds + " bed, " + squareArea + "m²");
 
             // Read description from cursor and update view
             String description = data.getString(COL_WEATHER_DESC);
-            mDescriptionView.setText(description + " - " + numberOfBeds + " bed, " + squareArea + "m²");
+            mDescriptionView.setText(description);
 
             // For accessibility, add a content description to the icon field
             mIconView.setContentDescription(description);

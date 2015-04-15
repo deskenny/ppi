@@ -265,7 +265,7 @@ public class MyHomeAdapterHelper {
     private void readMyHomeSquareFootage(String detailedDescription, int indexOfBed, int indexOfHyphen, int indexOfMetresSquared, ContentValues propertyValues) {
         if (detailedDescription != null && indexOfMetresSquared != -1 && indexOfBed != -1 && indexOfMetresSquared > indexOfBed) {
             String sSizeString = detailedDescription.substring(indexOfBed, indexOfMetresSquared).trim();
-            sSizeString = sSizeString.replaceAll("[^\\d]", ""); // strip the non numerics
+            sSizeString = sSizeString.replaceAll("[^\\d.]", ""); // strip the non numerics
             if (sSizeString != null) {
                 sSizeString = sSizeString.trim();
                 try {
