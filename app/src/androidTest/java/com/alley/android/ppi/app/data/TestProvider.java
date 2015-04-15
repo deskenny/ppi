@@ -132,25 +132,25 @@ public class TestProvider extends AndroidTestCase {
             functioning correctly.
          */
     public void testGetType() {
-        // content://com.alley.android.ppi.app/weather/
+        // content://com.alley.android.ppi.app/property/
         String type = mContext.getContentResolver().getType(PropertyContract.PropertyEntry.CONTENT_URI);
-        // vnd.android.cursor.dir/com.alley.android.ppi.app/weather
+        // vnd.android.cursor.dir/com.alley.android.ppi.app/property
         assertEquals("Error: the WeatherEntry CONTENT_URI should return WeatherEntry.CONTENT_TYPE",
                 PropertyContract.PropertyEntry.CONTENT_TYPE, type);
 
         String testLocation = "94074";
-        // content://com.alley.android.ppi.app/weather/94074
+        // content://com.alley.android.ppi.app/property/94074
         type = mContext.getContentResolver().getType(
                 PropertyContract.PropertyEntry.buildPropertyLocation(testLocation));
-        // vnd.android.cursor.dir/com.alley.android.ppi.app/weather
+        // vnd.android.cursor.dir/com.alley.android.ppi.app/property
         assertEquals("Error: the WeatherEntry CONTENT_URI with location should return WeatherEntry.CONTENT_TYPE",
                 PropertyContract.PropertyEntry.CONTENT_TYPE, type);
 
         long testDate = 1419120000L; // December 21st, 2014
-        // content://com.alley.android.ppi.app/weather/94074/20140612
+        // content://com.alley.android.ppi.app/property/94074/20140612
         type = mContext.getContentResolver().getType(
                 PropertyContract.PropertyEntry.buildPropertyWithAddress("this,WOULD,be,a,test, address"));
-        // vnd.android.cursor.item/com.alley.android.ppi.app/weather/1419120000
+        // vnd.android.cursor.item/com.alley.android.ppi.app/property/1419120000
         assertEquals("Error: the WeatherEntry CONTENT_URI with location and date should return WeatherEntry.CONTENT_ITEM_TYPE",
                 PropertyContract.PropertyEntry.CONTENT_ITEM_TYPE, type);
 
@@ -164,7 +164,7 @@ public class TestProvider extends AndroidTestCase {
 
     /*
         This test uses the database directly to insert and then uses the ContentProvider to
-        read out the data.  Uncomment this test to see if the basic weather query functionality
+        read out the data.  Uncomment this test to see if the basic property query functionality
         given in the ContentProvider is working correctly.
      */
     public void testBasicWeatherQuery() {
@@ -175,16 +175,16 @@ public class TestProvider extends AndroidTestCase {
         ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
         long locationRowId = TestUtilities.insertNorthPoleLocationValues(mContext);
 
-        // Fantastic.  Now that we have a location, add some weather!
-        ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
+        // Fantastic.  Now that we have a location, add some property!
+        ContentValues propertyValues = TestUtilities.createWeatherValues(locationRowId);
 
-        long weatherRowId = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, weatherValues);
-        assertTrue("Unable to Insert WeatherEntry into the Database", weatherRowId != -1);
+        long propertyRowId = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, propertyValues);
+        assertTrue("Unable to Insert WeatherEntry into the Database", propertyRowId != -1);
 
         db.close();
 
         // Test the basic content provider query
-        Cursor weatherCursor = mContext.getContentResolver().query(
+        Cursor propertyCursor = mContext.getContentResolver().query(
                 PropertyContract.PropertyEntry.CONTENT_URI,
                 null,
                 null,
@@ -193,7 +193,7 @@ public class TestProvider extends AndroidTestCase {
         );
 
         // Make sure we get the correct cursor out of the database
-        TestUtilities.validateCursor("testBasicWeatherQuery", weatherCursor, weatherValues);
+        TestUtilities.validateCursor("testBasicWeatherQuery", propertyCursor, propertyValues);
     }
 
     /*
@@ -324,25 +324,25 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.validateCursor("testInsertReadProvider. Error validating LocationEntry.",
                 cursor, testValues);
 
-        // Fantastic.  Now that we have a location, add some weather!
-        ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
+        // Fantastic.  Now that we have a location, add some property!
+        ContentValues propertyValues = TestUtilities.createWeatherValues(locationRowId);
         // The TestContentObserver is a one-shot class
         tco = TestUtilities.getTestContentObserver();
 
         mContext.getContentResolver().registerContentObserver(PropertyContract.PropertyEntry.CONTENT_URI, true, tco);
 
-        Uri weatherInsertUri = mContext.getContentResolver()
-                .insert(PropertyContract.PropertyEntry.CONTENT_URI, weatherValues);
-        assertTrue(weatherInsertUri != null);
+        Uri propertyInsertUri = mContext.getContentResolver()
+                .insert(PropertyContract.PropertyEntry.CONTENT_URI, propertyValues);
+        assertTrue(propertyInsertUri != null);
 
-        // Did our content observer get called?  Students:  If this fails, your insert weather
+        // Did our content observer get called?  Students:  If this fails, your insert property
         // in your ContentProvider isn't calling
         // getContext().getContentResolver().notifyChange(uri, null);
         tco.waitForNotificationOrFail();
         mContext.getContentResolver().unregisterContentObserver(tco);
 
         // A cursor is your primary interface to the query results.
-        Cursor weatherCursor = mContext.getContentResolver().query(
+        Cursor propertyCursor = mContext.getContentResolver().query(
                 PropertyContract.PropertyEntry.CONTENT_URI,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
@@ -351,14 +351,14 @@ public class TestProvider extends AndroidTestCase {
         );
 
         TestUtilities.validateCursor("testInsertReadProvider. Error validating WeatherEntry insert.",
-                weatherCursor, weatherValues);
+                propertyCursor, propertyValues);
 
-        // Add the location values in with the weather data so that we can make
+        // Add the location values in with the property data so that we can make
         // sure that the join worked and we actually get all the values back
-        weatherValues.putAll(testValues);
+        propertyValues.putAll(testValues);
 
         // Get the joined Weather and Location data
-        weatherCursor = mContext.getContentResolver().query(
+        propertyCursor = mContext.getContentResolver().query(
                 PropertyContract.PropertyEntry.buildPropertyLocation(TestUtilities.TEST_LOCATION),
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
@@ -366,10 +366,10 @@ public class TestProvider extends AndroidTestCase {
                 null  // sort order
         );
         TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data.",
-                weatherCursor, weatherValues);
+                propertyCursor, propertyValues);
 
         // Get the joined Weather and Location data with a start date
-        weatherCursor = mContext.getContentResolver().query(
+        propertyCursor = mContext.getContentResolver().query(
                 PropertyContract.PropertyEntry.buildPropertiesLocationWithStartDate(
                         TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
                 null, // leaving "columns" null just returns all the columns.
@@ -378,10 +378,10 @@ public class TestProvider extends AndroidTestCase {
                 null  // sort order
         );
         TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data with start date.",
-                weatherCursor, weatherValues);
+                propertyCursor, propertyValues);
 
         // Get the joined Weather data for a specific date
-        weatherCursor = mContext.getContentResolver().query(
+        propertyCursor = mContext.getContentResolver().query(
                 PropertyContract.PropertyEntry.buildPropertyWithAddress(TestUtilities.TEST_ADDRESS),
                 null,
                 null,
@@ -389,7 +389,7 @@ public class TestProvider extends AndroidTestCase {
                 null
         );
         TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location data for a specific address.",
-                weatherCursor, weatherValues);
+                propertyCursor, propertyValues);
     }
 
     // Make sure we can still delete after adding/updating stuff
@@ -404,9 +404,9 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.TestContentObserver locationObserver = TestUtilities.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(LocationEntry.CONTENT_URI, true, locationObserver);
 
-        // Register a content observer for our weather delete.
-        TestUtilities.TestContentObserver weatherObserver = TestUtilities.getTestContentObserver();
-        mContext.getContentResolver().registerContentObserver(PropertyContract.PropertyEntry.CONTENT_URI, true, weatherObserver);
+        // Register a content observer for our property delete.
+        TestUtilities.TestContentObserver propertyObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(PropertyContract.PropertyEntry.CONTENT_URI, true, propertyObserver);
 
         deleteAllRecordsFromProvider();
 
@@ -414,10 +414,10 @@ public class TestProvider extends AndroidTestCase {
         // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
         // delete.  (only if the insertReadProvider is succeeding)
         locationObserver.waitForNotificationOrFail();
-        weatherObserver.waitForNotificationOrFail();
+        propertyObserver.waitForNotificationOrFail();
 
         mContext.getContentResolver().unregisterContentObserver(locationObserver);
-        mContext.getContentResolver().unregisterContentObserver(weatherObserver);
+        mContext.getContentResolver().unregisterContentObserver(propertyObserver);
     }
 
 
@@ -428,18 +428,18 @@ public class TestProvider extends AndroidTestCase {
         ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
 
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, currentTestDate+= millisecondsInADay ) {
-            ContentValues weatherValues = new ContentValues();
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationRowId);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, currentTestDate + i);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_LONGTITUDE, 1.1);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_NUM_BEDS, 1.2 + 0.01 * (float) i);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, 1.3 - 0.01 * (float) i);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 75 + i);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE, 65 - i);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, "Asteroids " + i);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 5.5 + 0.2 * (float) i);
-            weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID, 321);
-            returnContentValues[i] = weatherValues;
+            ContentValues propertyValues = new ContentValues();
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationRowId);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, currentTestDate + i);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_LONGTITUDE, 1.1);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_NUM_BEDS, 1.2 + 0.01 * (float) i);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, 1.3 - 0.01 * (float) i);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 75 + i);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE, 65 - i);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, "Asteroids " + i);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 5.5 + 0.2 * (float) i);
+            propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID, 321);
+            returnContentValues[i] = propertyValues;
         }
         return returnContentValues;
     }
@@ -472,22 +472,22 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.validateCursor("testBulkInsert. Error validating LocationEntry.",
                 cursor, testValues);
 
-        // Now we can bulkInsert some weather.  In fact, we only implement BulkInsert for weather
+        // Now we can bulkInsert some property.  In fact, we only implement BulkInsert for property
         // entries.  With ContentProviders, you really only have to implement the features you
         // use, after all.
         ContentValues[] bulkInsertContentValues = createBulkInsertWeatherValues(locationRowId);
 
         // Register a content observer for our bulk insert.
-        TestUtilities.TestContentObserver weatherObserver = TestUtilities.getTestContentObserver();
-        mContext.getContentResolver().registerContentObserver(PropertyContract.PropertyEntry.CONTENT_URI, true, weatherObserver);
+        TestUtilities.TestContentObserver propertyObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(PropertyContract.PropertyEntry.CONTENT_URI, true, propertyObserver);
 
         int insertCount = mContext.getContentResolver().bulkInsert(PropertyContract.PropertyEntry.CONTENT_URI, bulkInsertContentValues);
 
         // Students:  If this fails, it means that you most-likely are not calling the
         // getContext().getContentResolver().notifyChange(uri, null); in your BulkInsert
         // ContentProvider method.
-        weatherObserver.waitForNotificationOrFail();
-        mContext.getContentResolver().unregisterContentObserver(weatherObserver);
+        propertyObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(propertyObserver);
 
         assertEquals(insertCount, BULK_INSERT_RECORDS_TO_INSERT);
 
@@ -511,4 +511,62 @@ public class TestProvider extends AndroidTestCase {
         }
         cursor.close();
     }
+
+
+    public void testInsertReadProviderImage() {
+        ContentValues testValues = TestUtilities.createImageValues();
+
+        // Register a content observer for our insert.  This time, directly with the content resolver
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(PropertyContract.ImageEntry.CONTENT_URI, true, tco);
+        Uri imageUri = mContext.getContentResolver().insert(PropertyContract.ImageEntry.CONTENT_URI, testValues);
+
+        // Did our content observer get called?  Students:  If this fails, your insert location
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        long imageRowId = ContentUris.parseId(imageUri);
+
+        // Verify we got a row back.
+        assertTrue(imageRowId != -1);
+
+        // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
+        // the round trip.
+
+        // A cursor is your primary interface to the query results.
+        Cursor cursor = mContext.getContentResolver().query(
+                PropertyContract.ImageEntry.CONTENT_URI,
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+
+        assertTrue( "Error: No Records returned from location query", cursor.moveToFirst() );
+
+        assertEquals(cursor.getString(1), "testAddress");
+        byte [] blob = cursor.getBlob(2);
+        assertEquals(blob[0], '1');
+        assertEquals(blob[1], '2');
+        assertEquals(blob[2], '3');
+
+        cursor.close();
+
+        cursor = mContext.getContentResolver().query(
+                PropertyContract.ImageEntry.CONTENT_URI,
+                null, // leaving "columns" null just returns all the columns.
+                "address = testAddress", // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+
+        assertTrue( "Error: No Records returned from location query", cursor.moveToFirst() );
+
+        assertEquals(cursor.getString(1), "testAddress");
+        blob = cursor.getBlob(2);
+        assertEquals(blob[0], '1');
+        assertEquals(blob[1], '2');
+        assertEquals(blob[2], '3');
+    }    
 }

@@ -28,6 +28,9 @@ public class TestUriMatcher extends AndroidTestCase {
     private static final Uri TEST_WEATHER_DIR = PropertyContract.PropertyEntry.CONTENT_URI;
     private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = PropertyContract.PropertyEntry.buildPropertyLocation(LOCATION_QUERY);
     private static final Uri TEST_WEATHER_WITH_LOCATION_AND_ADDRESS_DIR = PropertyContract.PropertyEntry.buildPropertyWithAddress(TEST_ADDRESS);
+    private static final Uri TEST_IMAGE_DIR = PropertyContract.ImageEntry.CONTENT_URI;
+    private static final Uri TEST_IMAGE_WITH_ADDRESS_DIR = PropertyContract.ImageEntry.buildImageUriFromAddress(TEST_ADDRESS);
+
     // content://com.alley.android.ppi.app/location"
     private static final Uri TEST_LOCATION_DIR = PropertyContract.LocationEntry.CONTENT_URI;
 
@@ -42,5 +45,10 @@ public class TestUriMatcher extends AndroidTestCase {
                 testMatcher.match(TEST_WEATHER_WITH_LOCATION_AND_ADDRESS_DIR), PropertyProvider.PROPERTY_WITH_LOCATION_AND_ADDRESS);
         assertEquals("Error: The LOCATION URI was matched incorrectly.",
                 testMatcher.match(TEST_LOCATION_DIR), PropertyProvider.LOCATION);
+        assertEquals("Error: The IMAGE URI was matched incorrectly.",
+                testMatcher.match(TEST_IMAGE_DIR), PropertyProvider.IMAGE);
+        assertEquals("Error: The IMAGE URI was matched incorrectly.",
+                testMatcher.match(TEST_IMAGE_WITH_ADDRESS_DIR), PropertyProvider.IMAGE_BY_PROPERTY);
+
     }
 }

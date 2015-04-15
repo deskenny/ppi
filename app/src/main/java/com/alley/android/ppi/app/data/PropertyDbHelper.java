@@ -48,7 +48,8 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
                 PropertyContract.ImageEntry._ID + " INTEGER PRIMARY KEY," +
                 PropertyContract.ImageEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
                 PropertyContract.ImageEntry.COLUMN_PHOTO + " BLOB NOT NULL," +
-                PropertyContract.ImageEntry.COLUMN_IS_PRIMARY + " BOOLEAN DEFAULT FALSE );";
+                PropertyContract.ImageEntry.COLUMN_IS_PRIMARY + " BOOLEAN DEFAULT FALSE, " +
+                PropertyContract.ImageEntry.COLUMN_DATE + " DATE NOT NULL );";
 
 
         final String SQL_CREATE_PROPERTY_TABLE = "CREATE TABLE " + PropertyContract.PropertyEntry.TABLE_NAME + " (" +

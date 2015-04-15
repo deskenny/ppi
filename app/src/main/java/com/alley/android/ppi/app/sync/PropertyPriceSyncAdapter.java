@@ -199,7 +199,8 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 values.put(PropertyContract.PropertyEntry.COLUMN_PRICE, price);
                 values.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE, price);
 
-                Log.i(LOG_TAG, "attempting lookup of " + propertyId + ". " + address + ". " + ppiURL);
+                Log.i(LOG_TAG, "doDetailSync:address. " + address);
+                //Log.i(LOG_TAG, "attempting lookup of " + propertyId + ". " + address + ". " + ppiURL);
                 // read the brochure details
                 readDetailsPage(ppiURL, values);
                 boolean brochureFound = googleHelper.readGoogle(address, values, getContext());
@@ -303,14 +304,15 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
                 String[] td = line.split("<td>");
                 if (td != null && td.length >= 4) {
-                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, sdf.parse(td[1]).getTime());
-                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, td[2]);
+                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, sdf.parse(stripTrailingTd(td[1])).getTime());
+                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, stripTrailingTd(td[2]));
                     String fullAddress = td[3];
-                    String address = stripLink(fullAddress);
+                    Log.i(LOG_TAG, "fullAddress:address. " + fullAddress);
+                    String address = Utility.standardiseAddress(stripLink(fullAddress));
                     if (previousAddresses.contains(address)) {
                         continue; // we did this place before don't reinsert
                     }
-                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, address);
+                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, Utility.standardiseAddress(address));
                     String link = PROPERTY_PRICE_BASE_URL + readLink(fullAddress);
                     propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PROPERTY_PRICE_REGISTER_URL, link);
 
@@ -348,6 +350,12 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
         return;
     }
 
+    private String stripTrailingTd(String in) {
+        if (in != null && in.indexOf("<") > 0) {
+            return in.substring(0, in.indexOf("<"));
+        }
+        return in;
+    }
 
     private void addPropertyPrices(Vector<ContentValues> cVVector)
             throws JSONException {

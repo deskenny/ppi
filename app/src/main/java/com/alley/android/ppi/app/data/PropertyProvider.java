@@ -194,7 +194,7 @@ public class PropertyProvider extends ContentProvider {
             case IMAGE_BY_PROPERTY:
                 return PropertyContract.ImageEntry.CONTENT_TYPE;
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("!!Unknown uri: " + uri);
         }
     }
 
@@ -325,6 +325,10 @@ public class PropertyProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         PropertyContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case IMAGE:
+                rowsDeleted = db.delete(
+                        PropertyContract.ImageEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -351,6 +355,10 @@ public class PropertyProvider extends ContentProvider {
                 rowsUpdated = db.update(PropertyContract.LocationEntry.TABLE_NAME, values, selection,
                         selectionArgs);
                 break;
+            case IMAGE:
+                rowsUpdated = db.update(PropertyContract.ImageEntry.TABLE_NAME, values, selection,
+                        selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -364,10 +372,25 @@ public class PropertyProvider extends ContentProvider {
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
+        int returnCount = 0;
         switch (match) {
+            case IMAGE:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(PropertyContract.ImageEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
             case PROPERTY:
                 db.beginTransaction();
-                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, value);

@@ -43,8 +43,8 @@ public class GoogleAdapterHelper {
 
             if (url != null && url.contains("myhome.ie") && url.contains("brochure")) {
                 ContentValues brochureValues = new ContentValues();
-                myHomeHelper.readMyHomeBrochurePage(url, brochureValues, context);
-                if (Utility.isMatchedAddress(brochureValues, propertyValues)) {
+                boolean wasMatch = myHomeHelper.readMyHomeBrochurePage(url, brochureValues, address, context);
+                if (wasMatch) {
                     brochureValues.remove(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
                     propertyValues.putAll(brochureValues);
                     propertyValues.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_READ_ATTEMPTED, true);

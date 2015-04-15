@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.text.format.Time;
 import android.util.Log;
 
+import com.alley.android.ppi.app.Utility;
 import com.alley.android.ppi.app.data.PropertyContract;
 
 import org.json.JSONException;
@@ -36,32 +37,43 @@ public class MyHomeAdapterHelper {
     }
 
     // URL would be something like http://www.myhome.ie/residential/brochure/146-downpatrick-road-crumlin-dublin-12/2896646
-    public void readMyHomeBrochurePage(String link, ContentValues propertyValues, Context context) throws IOException, JSONException  {
+    public boolean readMyHomeBrochurePage(String link, ContentValues brochureValues, String address, Context context) throws IOException, JSONException  {
         Log.i(LOG_TAG, "URL: " + link);
-        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_MY_HOME_BROCHURE_URL, link);
+        brochureValues.put(PropertyContract.PropertyEntry.COLUMN_MY_HOME_BROCHURE_URL, link);
 
         Document doc = Jsoup.connect(link).get();
-        String detailedDescription = "";
-        Elements elements = doc.select("h2[class=brochureDescription]");
-        for (Element element : elements) {
-            detailedDescription = element.text();
-            // Element will be something like ..... Sale Agreed - 3 Bed Terraced House 60 m² / 646 ft² Sale Agreed
-            Log.i(LOG_TAG, "elementText: " + detailedDescription);
-            int indexOfBed = detailedDescription.indexOf("Bed");
-            int indexOfHyphen = detailedDescription.indexOf("-");
-            int indexOfMetresSquared = detailedDescription.indexOf("m²");
+        readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_ADDRESS, "brochureAddress");
+        String addressFromBrochure = (String) brochureValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
+        Log.i(LOG_TAG, "addressFromBrochure: " + addressFromBrochure);
+        addressFromBrochure =  Utility.standardiseAddress(addressFromBrochure);
+        if (Utility.isMatchedAddress(addressFromBrochure, address)) {
+            brochureValues.remove(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
+            brochureValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, address);
+            String detailedDescription = "";
+            Elements elements = doc.select("h2[class=brochureDescription]");
+            for (Element element : elements) {
+                detailedDescription = element.text();
+                // Element will be something like ..... Sale Agreed - 3 Bed Terraced House 60 m² / 646 ft² Sale Agreed
+                Log.i(LOG_TAG, "elementText: " + detailedDescription);
+                int indexOfBed = detailedDescription.indexOf("Bed");
+                int indexOfHyphen = detailedDescription.indexOf("-");
+                int indexOfMetresSquared = detailedDescription.indexOf("m²");
 
-            readMyHomeReadNumberBedrooms(detailedDescription, indexOfBed, indexOfHyphen, propertyValues);
-            readMyHomeSquareFootage(detailedDescription, indexOfBed, indexOfHyphen, indexOfMetresSquared, propertyValues);
+                readMyHomeReadNumberBedrooms(detailedDescription, indexOfBed, indexOfHyphen, brochureValues);
+                readMyHomeSquareFootage(detailedDescription, indexOfBed, indexOfHyphen, indexOfMetresSquared, brochureValues);
+            }
+            readLocation(doc, brochureValues);
+            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC, "contentDescription content0");
+            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_HEADER_FEATURES, "contentFeatures content1");
+            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_BER_DETAILS, "contentBER Details content2");
+            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION, "contentAccommodation content3");
+            storeImages(doc, brochureValues, context);
+            calculateClass(brochureValues);
+            return true;
         }
-        readLocation(doc, propertyValues);
-        readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC, "contentDescription content0");
-        readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_HEADER_FEATURES, "contentFeatures content1");
-        readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_BER_DETAILS, "contentBER Details content2");
-        readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION, "contentAccommodation content3");
-        readDiv(doc, propertyValues, PropertyContract.PropertyEntry.COLUMN_ADDRESS, "brochureAddress");
-        storeImages(doc, propertyValues, context);
-        calculateClass(propertyValues);
+        else {
+            return false;
+        }
     }
 
 
@@ -93,11 +105,15 @@ public class MyHomeAdapterHelper {
             byte[] bytes = getBitmap(imageSrc);
             if (bytes != null) {
                 ContentValues values = new ContentValues();
-                values.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, (String) propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS));
+                String address = (String) propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
+                values.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, address);
                 values.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, first);
                 values.put(PropertyContract.ImageEntry.COLUMN_PHOTO, bytes);
+                values.put(PropertyContract.ImageEntry.COLUMN_DATE, System.currentTimeMillis());
                 cVVectorImages.add(values);
                 first = false;
+                Log.i(LOG_TAG, "storeImages-address " + address);
+                Log.d(LOG_TAG, "Image insert " + propertyValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS) + ".");
             }
         }
         addImages(cVVectorImages, context);
@@ -134,13 +150,13 @@ public class MyHomeAdapterHelper {
             context.getContentResolver().bulkInsert(PropertyContract.ImageEntry.CONTENT_URI, cvArray);
 
             // delete old data so we don't build up an endless history
-            context.getContentResolver().delete(PropertyContract.PropertyEntry.CONTENT_URI,
-                    PropertyContract.PropertyEntry.COLUMN_DATE + " <= ?",
+            context.getContentResolver().delete(PropertyContract.ImageEntry.CONTENT_URI,
+                    PropertyContract.ImageEntry.COLUMN_DATE + " <= ?",
                     new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - PropertyPriceSyncAdapter.NUM_DAYS_TO_CLEANUP))});
 
         }
 
-        Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
+        Log.d(LOG_TAG, "Image Sync Complete. " + cVVector.size() + " Inserted");
 
     }
 

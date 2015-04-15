@@ -254,7 +254,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     public void onLoadFinishedImages(Loader<Cursor> loader, Cursor cursor) {
-        recList.setAdapter(new DetailImageAdapter(this.getActivity(), cursor));
+        imageAdapter.changeCursor(cursor);
     }
 
     public void onLoadFinishedDetail(Loader<Cursor> loader, Cursor data) {

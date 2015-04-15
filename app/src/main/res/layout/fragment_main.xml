@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="0.5"
-        android:padding="5dp"
+        android:padding="30dp"
         android:fontFamily="sans-serif-condensed"
         android:textAppearance="?android:textAppearanceLarge"
         android:text="@string/loadingresults"

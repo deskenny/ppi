@@ -46,9 +46,6 @@ public class TestUtilities extends AndroidTestCase {
         }
     }
 
-    /*
-        Students: Use this to create some default weather values for your database tests.
-     */
     static ContentValues createWeatherValues(long locationRowId) {
         ContentValues weatherValues = new ContentValues();
         weatherValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationRowId);
@@ -81,6 +78,18 @@ public class TestUtilities extends AndroidTestCase {
         return weatherValues;
     }
 
+    static ContentValues createImageValues() {
+        ContentValues weatherValues = new ContentValues();
+        byte [] testBytes = new byte[3];
+        testBytes[0] = '1';
+        testBytes[1]= '2';
+        testBytes[2]= '3';
+        weatherValues.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, "testAddress");
+        weatherValues.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, "1");
+        weatherValues.put(PropertyContract.ImageEntry.COLUMN_PHOTO, testBytes);
+
+        return weatherValues;
+    }
     /*
         Students: You can uncomment this helper function once you have finished creating the
         LocationEntry part of the PropertyContract.

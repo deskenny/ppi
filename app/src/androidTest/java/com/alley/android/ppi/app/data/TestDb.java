@@ -20,6 +20,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+import java.sql.Blob;
 import java.util.HashSet;
 
 public class TestDb extends AndroidTestCase {
@@ -289,6 +290,52 @@ public class TestDb extends AndroidTestCase {
 
         TestUtilities.validateCurrentRecord("Error: Second Location Query Validation Failed",
                 weatherCursor, weatherValuesSecond);
+
+        // Sixth Step: Close cursor and database
+        weatherCursor.close();
+        dbHelper.close();
+    }
+
+    public void testImageTable() {
+
+        // First step: Get reference to writable database
+        // If there's an error in those massive SQL table creation Strings,
+        // errors will be thrown here when you try to get a writable database.
+        PropertyDbHelper dbHelper = new PropertyDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues imageValues = TestUtilities.createImageValues();
+
+        // Third Step (Weather): Insert ContentValues into database and get a row ID back
+        long imageRowId = db.insert(PropertyContract.ImageEntry.TABLE_NAME, null, imageValues);
+        assertTrue(imageRowId != -1);
+
+        // Fourth Step: Query the database and receive a Cursor back
+        // A cursor is your primary interface to the query results.
+        Cursor weatherCursor = db.query(
+                PropertyContract.ImageEntry.TABLE_NAME,  // Table to Query
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null, // columns to group by
+                null, // columns to filter by row groups
+                null  // sort order
+        );
+
+        // Move the cursor to the first valid database row and check to see if we have any rows
+        assertTrue( "Error: No Records returned from location query", weatherCursor.moveToFirst() );
+
+        // Fifth Step: Validate the location Query
+        assertEquals(weatherCursor.getString(1), "testAddress");
+        byte [] blob = weatherCursor.getBlob(2);
+        assertEquals(blob[0], '1');
+        assertEquals(blob[1], '2');
+        assertEquals(blob[2], '3');
+
+
+        // Move the cursor to demonstrate that there is only one record in the database
+        assertFalse( "Error: More than one record returned from image query",
+                weatherCursor.moveToNext() );
 
         // Sixth Step: Close cursor and database
         weatherCursor.close();

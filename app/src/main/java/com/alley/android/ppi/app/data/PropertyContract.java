@@ -173,6 +173,8 @@ public class PropertyContract {
 
         public static final String COLUMN_IS_PRIMARY = "is_primary";
 
+        public static final String COLUMN_DATE = "date";
+
         public static Uri buildImageUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }

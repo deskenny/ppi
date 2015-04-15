@@ -38,6 +38,13 @@ public class Utility {
 
     public final static String LOG_TAG = Utility.class.getSimpleName();
 
+    public static String standardiseAddress(String in) {
+        if (in != null) {
+            return in.trim().toLowerCase();
+        }
+        return null;
+    }
+
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_location_key),
@@ -204,8 +211,8 @@ public class Utility {
         return R.drawable.art_spinner;
     }
 
-    public static boolean isMatchedAddress(ContentValues brochureValues, ContentValues searchedValues) {
-        return isMatchedAddress((String) brochureValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS), (String) searchedValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS));
+    public static boolean isMatchedAddress(ContentValues brochureValues, String address) {
+        return isMatchedAddress((String) brochureValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS), address);
     }
 
     public static boolean isMatchedAddress(String brochureAddress, String searchedAddress) {
