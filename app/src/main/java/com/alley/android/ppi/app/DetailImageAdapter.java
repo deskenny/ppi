@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * {@link com.alley.android.ppi.app.DetailImageAdapter} exposes a list of weather forecasts
+ * {@link com.alley.android.ppi.app.DetailImageAdapter} exposes a list of properties
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
  */
 public class DetailImageAdapter extends CursorRecyclerViewAdapter<DetailImageAdapter.ViewHolder>{

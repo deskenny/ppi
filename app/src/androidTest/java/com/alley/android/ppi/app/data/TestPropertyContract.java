@@ -20,24 +20,21 @@ import android.test.AndroidTestCase;
 
 import com.alley.android.ppi.app.Utility;
 
-/*
-    Students: This is NOT a complete test for the WeatherContract --- just for the functions
-    that we expect you to write.
- */
+
 public class TestPropertyContract extends AndroidTestCase {
 
     // intentionally includes a slash to make sure Uri is getting quoted correctly
     private static final String TEST_PPI_LOCATION = "/North Pole";
     private static final long TEST_PPI_DATE = 1419033600L;  // December 20th, 2014
 
-    public void testBuildWeatherLocation() {
+    public void testBuildPropertyLocation() {
         Uri locationUri = PropertyContract.PropertyEntry.buildPropertyLocation(TEST_PPI_LOCATION);
         assertNotNull("Error: Null Uri returned.  You must fill-in buildPropertyLocation in " +
-                        "WeatherContract.",
+                        "PropertyContract.",
                 locationUri);
-        assertEquals("Error: Weather location not properly appended to the end of the Uri",
+        assertEquals("Error: Property location not properly appended to the end of the Uri",
                 TEST_PPI_LOCATION, locationUri.getLastPathSegment());
-        assertEquals("Error: Weather location Uri doesn't match our expected result",
+        assertEquals("Error: Property location Uri doesn't match our expected result",
                 locationUri.toString(),
                 "content://com.alley.android.ppi.app/property/%2FNorth%20Pole");
     }

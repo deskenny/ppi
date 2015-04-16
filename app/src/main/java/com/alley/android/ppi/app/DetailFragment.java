@@ -17,8 +17,6 @@ package com.alley.android.ppi.app;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,12 +34,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alley.android.ppi.app.data.PropertyContract;
-
-import java.sql.Blob;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -95,15 +90,15 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
     // must change.
     public static final int COLUMN_PROP_TYPE_ID = 0;
-    public static final int COL_WEATHER_DATE = 1;
-    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_PROPERTY_DATE = 1;
+    public static final int COL_PROPERTY_DESC = 2;
     public static final int COL_PRICE = 3;
-    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_PROPERTY_MIN_TEMP = 4;
     public static final int COL_NUM_BEDS = 5;
     public static final int COL_SQUARE_AREA = 6;
     public static final int COL_LATITUDE = 7;
     public static final int COL_LONGTITUDE = 8;
-    public static final int COL_WEATHER_CONDITION_ID = 9;
+    public static final int COL_PROPERTY_CONDITION_ID = 9;
     public static final int COL_CONTENT_DESCRIPTION = 10;
     public static final int COL_HEADER_FEATURES = 11;
     public static final int COLUMN_ACCOMMODATION = 12;
@@ -259,21 +254,21 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     public void onLoadFinishedDetail(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
-            // Read weather condition ID from cursor
-            int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
+            // Read property condition ID from cursor
+            int propertyId = data.getInt(COL_PROPERTY_CONDITION_ID);
             int numberOfBeds = data.getInt(COL_NUM_BEDS);
             float squareArea = data.getFloat(COL_SQUARE_AREA);
 
-            // Use weather art image
-            mIconView.setImageResource(Utility.getArtResourceForPropType(weatherId, numberOfBeds));
+            // Use property art image
+            mIconView.setImageResource(Utility.getArtResourceForPropType(propertyId, numberOfBeds));
 
             // Read date from cursor and update views for day of week and date
-            long date = data.getLong(COL_WEATHER_DATE);
+            long date = data.getLong(COL_PROPERTY_DATE);
             String dateText = Utility.getFormattedMonthDay(getActivity(), date);
             mDateView.setText(dateText  + " - " + numberOfBeds + " bed, " + squareArea + "m²");
 
             // Read description from cursor and update view
-            String description = data.getString(COL_WEATHER_DESC);
+            String description = data.getString(COL_PROPERTY_DESC);
             mDescriptionView.setText(description);
 
             // For accessibility, add a content description to the icon field

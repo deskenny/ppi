@@ -24,10 +24,10 @@ public class TestUriMatcher extends AndroidTestCase {
     private static final String TEST_ADDRESS = "Aster,oids";  // December 20th, 2014
     private static final long TEST_LOCATION_ID = 10L;
 
-    // content://com.alley.android.ppi.app/weather"
-    private static final Uri TEST_WEATHER_DIR = PropertyContract.PropertyEntry.CONTENT_URI;
-    private static final Uri TEST_WEATHER_WITH_LOCATION_DIR = PropertyContract.PropertyEntry.buildPropertyLocation(LOCATION_QUERY);
-    private static final Uri TEST_WEATHER_WITH_LOCATION_AND_ADDRESS_DIR = PropertyContract.PropertyEntry.buildPropertyWithAddress(TEST_ADDRESS);
+    // content://com.alley.android.ppi.app/property"
+    private static final Uri TEST_PROPERTY_DIR = PropertyContract.PropertyEntry.CONTENT_URI;
+    private static final Uri TEST_PROPERTY_WITH_LOCATION_DIR = PropertyContract.PropertyEntry.buildPropertyLocation(LOCATION_QUERY);
+    private static final Uri TEST_PROPERTY_WITH_LOCATION_AND_ADDRESS_DIR = PropertyContract.PropertyEntry.buildPropertyWithAddress(TEST_ADDRESS);
     private static final Uri TEST_IMAGE_DIR = PropertyContract.ImageEntry.CONTENT_URI;
     private static final Uri TEST_IMAGE_WITH_ADDRESS_DIR = PropertyContract.ImageEntry.buildImageUriFromAddress(TEST_ADDRESS);
 
@@ -38,11 +38,11 @@ public class TestUriMatcher extends AndroidTestCase {
         UriMatcher testMatcher = PropertyProvider.buildUriMatcher();
 
         assertEquals("Error: The PROPERTY URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_DIR), PropertyProvider.PROPERTY);
+                testMatcher.match(TEST_PROPERTY_DIR), PropertyProvider.PROPERTY);
         assertEquals("Error: The PROPERTY WITH LOCATION URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_WITH_LOCATION_DIR), PropertyProvider.PROPERTY_WITH_LOCATION);
+                testMatcher.match(TEST_PROPERTY_WITH_LOCATION_DIR), PropertyProvider.PROPERTY_WITH_LOCATION);
         assertEquals("Error: The PROPERTY WITH LOCATION AND DATE URI was matched incorrectly.",
-                testMatcher.match(TEST_WEATHER_WITH_LOCATION_AND_ADDRESS_DIR), PropertyProvider.PROPERTY_WITH_LOCATION_AND_ADDRESS);
+                testMatcher.match(TEST_PROPERTY_WITH_LOCATION_AND_ADDRESS_DIR), PropertyProvider.PROPERTY_WITH_LOCATION_AND_ADDRESS);
         assertEquals("Error: The LOCATION URI was matched incorrectly.",
                 testMatcher.match(TEST_LOCATION_DIR), PropertyProvider.LOCATION);
         assertEquals("Error: The IMAGE URI was matched incorrectly.",

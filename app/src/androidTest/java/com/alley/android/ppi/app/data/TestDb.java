@@ -20,7 +20,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
-import java.sql.Blob;
 import java.util.HashSet;
 
 public class TestDb extends AndroidTestCase {
@@ -47,7 +46,7 @@ public class TestDb extends AndroidTestCase {
         a good time to change your column names to match mine.
 
         Note that this only tests that the Location table has the correct columns, since we
-        give you the code for the weather table.  This test does not look at the
+        give you the code for the property table.  This test does not look at the
      */
     public void testCreateDb() throws Throwable {
         // build a HashSet of all of the table names we wish to look for
@@ -74,8 +73,8 @@ public class TestDb extends AndroidTestCase {
         } while( c.moveToNext() );
 
         // if this fails, it means that your database doesn't contain both the location entry
-        // and weather entry tables
-        assertTrue("Error: Your database was created without both the location entry and weather entry tables",
+        // and property entry tables
+        assertTrue("Error: Your database was created without both the location entry and property entry tables",
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
@@ -114,9 +113,9 @@ public class TestDb extends AndroidTestCase {
         insertLocation();
     }
 
-    public void testWeatherTable() {
+    public void testPropertyTable() {
         // First insert the location, and then use the locationRowId to insert
-        // the weather. Make sure to cover as many failure cases as you can.
+        // the property. Make sure to cover as many failure cases as you can.
 
         // Instead of rewriting all of the code we've already written in testLocationTable
         // we can move this code to insertLocation and then call insertLocation from both
@@ -134,16 +133,16 @@ public class TestDb extends AndroidTestCase {
         PropertyDbHelper dbHelper = new PropertyDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Second Step (Weather): Create weather values
-        ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
+        // Second Step (Property): Create property values
+        ContentValues propertyValues = TestUtilities.createPropertyValues(locationRowId);
 
-        // Third Step (Weather): Insert ContentValues into database and get a row ID back
-        long weatherRowId = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, weatherValues);
-        assertTrue(weatherRowId != -1);
+        // Third Step (Property): Insert ContentValues into database and get a row ID back
+        long propertyRowId = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, propertyValues);
+        assertTrue(propertyRowId != -1);
 
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
-        Cursor weatherCursor = db.query(
+        Cursor propertyCursor = db.query(
                 PropertyContract.PropertyEntry.TABLE_NAME,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
@@ -154,27 +153,21 @@ public class TestDb extends AndroidTestCase {
         );
 
         // Move the cursor to the first valid database row and check to see if we have any rows
-        assertTrue( "Error: No Records returned from location query", weatherCursor.moveToFirst() );
+        assertTrue( "Error: No Records returned from location query", propertyCursor.moveToFirst() );
 
         // Fifth Step: Validate the location Query
-        TestUtilities.validateCurrentRecord("testInsertReadDb weatherEntry failed to validate",
-                weatherCursor, weatherValues);
+        TestUtilities.validateCurrentRecord("testInsertReadDb propertyEntry failed to validate",
+                propertyCursor, propertyValues);
 
         // Move the cursor to demonstrate that there is only one record in the database
-        assertFalse( "Error: More than one record returned from weather query",
-                weatherCursor.moveToNext() );
+        assertFalse( "Error: More than one record returned from property query",
+                propertyCursor.moveToNext() );
 
         // Sixth Step: Close cursor and database
-        weatherCursor.close();
+        propertyCursor.close();
         dbHelper.close();
     }
 
-
-    /*
-        Students: This is a helper method for the testWeatherTable quiz. You can move your
-        code from testLocationTable to here so that you can call this code from both
-        testWeatherTable and testLocationTable.
-     */
     public long insertLocation() {
         // First step: Get reference to writable database
         // If there's an error in those massive SQL table creation Strings,
@@ -229,9 +222,9 @@ public class TestDb extends AndroidTestCase {
     }
 
 
-    public void testDoubleDateWeatherTable() {
+    public void testDoubleDatePropertyTable() {
         // First insert the location, and then use the locationRowId to insert
-        // the weather. Make sure to cover as many failure cases as you can.
+        // the property. Make sure to cover as many failure cases as you can.
 
         // Instead of rewriting all of the code we've already written in testLocationTable
         // we can move this code to insertLocation and then call insertLocation from both
@@ -250,25 +243,25 @@ public class TestDb extends AndroidTestCase {
         PropertyDbHelper dbHelper = new PropertyDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Second Step (Weather): Create weather values
-        ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
+        // Second Step (Property): Create property values
+        ContentValues propertyValues = TestUtilities.createPropertyValues(locationRowId);
 
-        // Third Step (Weather): Insert ContentValues into database and get a row ID back
-        long weatherRowId = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, weatherValues);
-        assertTrue(weatherRowId != -1);
+        // Third Step (Property): Insert ContentValues into database and get a row ID back
+        long propertyRowId = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, propertyValues);
+        assertTrue(propertyRowId != -1);
 
         // create another entry
         final long TEST_DATE_SECOND = 1419033600L;
-        ContentValues weatherValuesSecond = TestUtilities.createWeatherValues(locationRowId);
-        weatherValuesSecond.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, "Another Property");
-        weatherValuesSecond.put(PropertyContract.PropertyEntry.COLUMN_DATE, TEST_DATE_SECOND);
-        long weatherRowIdSecond = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, weatherValuesSecond);
-        assertTrue(weatherRowIdSecond != -1);
+        ContentValues propertyValuesSecond = TestUtilities.createPropertyValues(locationRowId);
+        propertyValuesSecond.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, "Another Property");
+        propertyValuesSecond.put(PropertyContract.PropertyEntry.COLUMN_DATE, TEST_DATE_SECOND);
+        long propertyRowIdSecond = db.insert(PropertyContract.PropertyEntry.TABLE_NAME, null, propertyValuesSecond);
+        assertTrue(propertyRowIdSecond != -1);
 
 
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
-        Cursor weatherCursor = db.query(
+        Cursor propertyCursor = db.query(
                 PropertyContract.PropertyEntry.TABLE_NAME,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
@@ -279,20 +272,20 @@ public class TestDb extends AndroidTestCase {
         );
 
         // Move the cursor to the first valid database row and check to see if we have any rows
-        assertTrue( "Error: No Records returned from location query", weatherCursor.moveToFirst() );
+        assertTrue( "Error: No Records returned from location query", propertyCursor.moveToFirst() );
 
-        assertEquals(2, weatherCursor.getCount());
+        assertEquals(2, propertyCursor.getCount());
 
         TestUtilities.validateCurrentRecord("Error: Location Query Validation Failed",
-                weatherCursor, weatherValues);
+                propertyCursor, propertyValues);
 
-        assertTrue(weatherCursor.moveToNext());
+        assertTrue(propertyCursor.moveToNext());
 
         TestUtilities.validateCurrentRecord("Error: Second Location Query Validation Failed",
-                weatherCursor, weatherValuesSecond);
+                propertyCursor, propertyValuesSecond);
 
         // Sixth Step: Close cursor and database
-        weatherCursor.close();
+        propertyCursor.close();
         dbHelper.close();
     }
 
@@ -306,13 +299,13 @@ public class TestDb extends AndroidTestCase {
 
         ContentValues imageValues = TestUtilities.createImageValues();
 
-        // Third Step (Weather): Insert ContentValues into database and get a row ID back
+        // Third Step (Property): Insert ContentValues into database and get a row ID back
         long imageRowId = db.insert(PropertyContract.ImageEntry.TABLE_NAME, null, imageValues);
         assertTrue(imageRowId != -1);
 
         // Fourth Step: Query the database and receive a Cursor back
         // A cursor is your primary interface to the query results.
-        Cursor weatherCursor = db.query(
+        Cursor propertyCursor = db.query(
                 PropertyContract.ImageEntry.TABLE_NAME,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
@@ -323,11 +316,11 @@ public class TestDb extends AndroidTestCase {
         );
 
         // Move the cursor to the first valid database row and check to see if we have any rows
-        assertTrue( "Error: No Records returned from location query", weatherCursor.moveToFirst() );
+        assertTrue( "Error: No Records returned from location query", propertyCursor.moveToFirst() );
 
         // Fifth Step: Validate the location Query
-        assertEquals(weatherCursor.getString(1), "testAddress");
-        byte [] blob = weatherCursor.getBlob(2);
+        assertEquals(propertyCursor.getString(1), "testAddress");
+        byte [] blob = propertyCursor.getBlob(2);
         assertEquals(blob[0], '1');
         assertEquals(blob[1], '2');
         assertEquals(blob[2], '3');
@@ -335,10 +328,10 @@ public class TestDb extends AndroidTestCase {
 
         // Move the cursor to demonstrate that there is only one record in the database
         assertFalse( "Error: More than one record returned from image query",
-                weatherCursor.moveToNext() );
+                propertyCursor.moveToNext() );
 
         // Sixth Step: Close cursor and database
-        weatherCursor.close();
+        propertyCursor.close();
         dbHelper.close();
     }
 }

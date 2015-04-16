@@ -36,8 +36,8 @@ public class PropertyContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     // Possible paths (appended to base content URI for possible URI's)
-    // For instance, content://com.alley.android.ppi.app/weather/ is a valid path for
-    // looking at weather data. content://com.alley.android.ppi.app/givemeroot/ will fail,
+    // For instance, content://com.alley.android.ppi.app/location/ is a valid path for
+    // looking at property data. content://com.alley.android.ppi.app/givemeroot/ will fail,
     // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
     // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
     public static final String PATH_PROPERTY = "property";
@@ -67,7 +67,7 @@ public class PropertyContract {
         }
     }
 
-    /* Inner class that defines the table contents of the weather table */
+    /* Inner class that defines the table contents of the property table */
     public static final class PropertyEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI =

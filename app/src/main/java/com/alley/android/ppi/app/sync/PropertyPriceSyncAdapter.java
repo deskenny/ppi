@@ -330,7 +330,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(LOG_TAG, "Error parsing ", pe);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-            // If the code didn't successfully get the weather data, there's no point in attempting
+            // If the code didn't successfully get the property data, there's no point in attempting
             // to parse it.
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -366,7 +366,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
 
         // Since this data is also sent in-order and the first day is always the
         // current day, we're going to take advantage of that to get a nice
-        // normalized UTC date for all of our weather.
+        // normalized UTC date for all of our property.
 
         Time dayTime = new Time();
         dayTime.setToNow();
@@ -412,13 +412,13 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             long lastSync = prefs.getLong(lastNotificationKey, 0);
 
             if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
-                // Last sync was more than 1 day ago, let's send a notification with the weather.
+                // Last sync was more than 1 day ago, let's send a notification with the property.
                 String locationQuery = Utility.getPreferredLocation(context);
 
-                Uri weatherUri = PropertyContract.PropertyEntry.buildPropertyLocation(locationQuery);
+                Uri propertyUri = PropertyContract.PropertyEntry.buildPropertyLocation(locationQuery);
 
                 // we'll query our contentProvider, as always
-                Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_PPI_PROJECTION, null, null, null);
+                Cursor cursor = context.getContentResolver().query(propertyUri, NOTIFY_PPI_PROJECTION, null, null, null);
 
                 if (cursor.moveToFirst()) {
                     int propTypeId = cursor.getInt(INDEX_PROP_TYPE_ID);
@@ -481,7 +481,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * Helper method to handle insertion of a new location in the weather database.
+     * Helper method to handle insertion of a new location in the property database.
      *
      * @param locationSetting The location string used to request updates from the server.
      * @param cityName        A human-readable city name, e.g "Mountain View"

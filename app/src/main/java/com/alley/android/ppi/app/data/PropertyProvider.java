@@ -46,7 +46,7 @@ public class PropertyProvider extends ContentProvider {
         sImageByAddressQueryBuilder = new SQLiteQueryBuilder();
 
         //This is an inner join which looks like
-        //weather INNER JOIN location ON weather.location_id = location._id
+        //property INNER JOIN location ON property.location_id = location._id
         sPropertyByLocationSettingQueryBuilder.setTables(
                 PropertyContract.PropertyEntry.TABLE_NAME + " INNER JOIN " +
                         PropertyContract.LocationEntry.TABLE_NAME +
@@ -83,7 +83,7 @@ public class PropertyProvider extends ContentProvider {
 //            PropertyContract.PropertyEntry.COLUMN_ADDRESS + " = ? ";
 
 
-    private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
+    private Cursor getPropertyByLocationSetting(Uri uri, String[] projection, String sortOrder) {
         String locationSetting = PropertyContract.PropertyEntry.getLocationSettingFromUri(uri);
         long startDate = PropertyContract.PropertyEntry.getStartDateFromUri(uri);
 
@@ -164,10 +164,6 @@ public class PropertyProvider extends ContentProvider {
         return matcher;
     }
 
-    /*
-        Students: We've coded this for you.  We just create a new WeatherDbHelper for later use
-        here.
-     */
     @Override
     public boolean onCreate() {
         mOpenHelper = new PropertyDbHelper(getContext());
@@ -218,7 +214,7 @@ public class PropertyProvider extends ContentProvider {
             }
             // "property/*"
             case PROPERTY_WITH_LOCATION: {
-                retCursor = getWeatherByLocationSetting(uri, projection, sortOrder);
+                retCursor = getPropertyByLocationSetting(uri, projection, sortOrder);
                 break;
             }
             // "property"

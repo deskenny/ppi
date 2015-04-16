@@ -75,7 +75,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & property tables in the background
             // (both have an _id column)
-            // On the one hand, that's annoying.  On the other, you can search the weather table
+            // On the one hand, that's annoying.  On the other, you can search the property table
             // using the location set by the user, which is only in the Location table.
             // So the convenience is worth it.
             PropertyContract.PropertyEntry.TABLE_NAME + "." + PropertyContract.PropertyEntry._ID,
@@ -91,7 +91,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     // These indices are tied to PROPERTY_LIST_COLUMNS.  If PROPERTY_LIST_COLUMNS changes, these
     // must change.
-    static final int COL_WEATHER_ID = 0;
+    static final int COL_PROPERTY_ID = 0;
     static final int COL_DATE = 1;
     static final int COL_PRICE = 2;
     static final int COL_DESCRIPTION = 3;
@@ -161,7 +161,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            updateWeather();
+            updateProperty();
             return true;
         }
         if (id == R.id.action_map) {
@@ -243,13 +243,13 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     // since we read the location when we create the loader, all we need to do is restart things
     void onLocationChanged() {
-        updateWeather();
+        updateProperty();
         getLoaderManager().restartLoader(PROPERTY_TOP_LEVEL_LOADER, null, this);
         Log.i(OverviewFragment.LOG_TAG, "setting refreshing to true from onLocationChanged");
         //mRefreshLayout.setRefreshing(true);
     }
 
-    private void updateWeather() {
+    private void updateProperty() {
         PropertyPriceSyncAdapter.syncImmediately(getActivity());
     }
 
@@ -294,7 +294,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         // This is called when a new Loader needs to be created.  This
         // fragment only uses one loader, so we don't care about checking the id.
 
-        // To only show current and future dates, filter the query to return weather only for
+        // To only show current and future dates, filter the query to return property only for
         // dates after or including today.
         // Sort order:  Ascending, by date.
         String sortOrder = PropertyContract.PropertyEntry.COLUMN_DATE + " DESC";

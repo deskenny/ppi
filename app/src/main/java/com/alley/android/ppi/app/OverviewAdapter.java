@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * {@link OverviewAdapter} exposes a list of weather forecasts
+ * {@link OverviewAdapter} exposes a list of Properties
  * from a {@link Cursor} to a {@link android.widget.ListView}.
  */
 public class OverviewAdapter extends CursorAdapter {
@@ -77,14 +77,14 @@ public class OverviewAdapter extends CursorAdapter {
         int viewType = getItemViewType(cursor.getPosition());
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
-                // Get weather icon
+                // Get property icon
                 viewHolder.iconView.setImageResource(Utility.getArtResourceForPropType(
                         cursor.getInt(OverviewFragment.COLUMN_PROP_TYPE_ID),
                         cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS)));
                 break;
             }
             case VIEW_TYPE_FUTURE_DAY: {
-                // Get weather icon
+                // Get property icon
                 viewHolder.iconView.setImageResource(Utility.getIconResourceForPropType(
                         cursor.getInt(OverviewFragment.COLUMN_PROP_TYPE_ID),
                         cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS)));
@@ -97,9 +97,9 @@ public class OverviewAdapter extends CursorAdapter {
         // Find TextView and set formatted date on it
         viewHolder.dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
 
-        // Read weather forecast from cursor
+        // Read property forecast from cursor
         String description = cursor.getString(OverviewFragment.COL_DESCRIPTION);
-        // Find TextView and set weather forecast on it
+        // Find TextView and set property forecast on it
         viewHolder.descriptionView.setText(description);
 
         // For accessibility, add a content description to the icon field

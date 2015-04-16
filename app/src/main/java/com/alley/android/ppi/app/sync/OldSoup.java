@@ -142,7 +142,7 @@
 //
 //        {
 //            Log.e(LOG_TAG, "Error ", e);
-//            // If the code didn't successfully get the weather data, there's no point in attempting
+//            // If the code didn't successfully get the property data, there's no point in attempting
 //            // to parse it.
 //        } catch (
 //                JSONException e

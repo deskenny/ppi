@@ -130,7 +130,7 @@ public class MyHomeAdapterHelper {
 
         // Since this data is also sent in-order and the first day is always the
         // current day, we're going to take advantage of that to get a nice
-        // normalized UTC date for all of our weather.
+        // normalized UTC date for all of our property.
 
         Time dayTime = new Time();
         dayTime.setToNow();

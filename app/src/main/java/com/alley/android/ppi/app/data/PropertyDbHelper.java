@@ -22,14 +22,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.alley.android.ppi.app.data.PropertyContract.LocationEntry;
 
 /**
- * Manages a local database for weather data.
+ * Manages a local database for property data.
  */
 public class PropertyDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 2;
 
-    static final String DATABASE_NAME = "weather.db";
+    static final String DATABASE_NAME = "property.db";
 
     public PropertyDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,13 +54,13 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_PROPERTY_TABLE = "CREATE TABLE " + PropertyContract.PropertyEntry.TABLE_NAME + " (" +
                 // Why AutoIncrement here, and not above?
-                // Unique keys will be auto-generated in either case.  But for weather
+                // Unique keys will be auto-generated in either case.  But for property
                 // forecasting, it's reasonable to assume the user will want information
                 // for a certain date and all dates *following*, so the forecast data
                 // should be sorted accordingly.
                 PropertyContract.PropertyEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
-                // the ID of the location entry associated with this weather data
+                // the ID of the location entry associated with this property data
                 PropertyContract.PropertyEntry.COLUMN_LOC_KEY + " INTEGER NOT NULL, " +
                 PropertyContract.PropertyEntry.COLUMN_DATE + " INTEGER NOT NULL, " +
                 PropertyContract.PropertyEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
@@ -86,8 +86,6 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + PropertyContract.PropertyEntry.COLUMN_LOC_KEY + ") REFERENCES " +
                 LocationEntry.TABLE_NAME + " (" + LocationEntry._ID + "), " +
 
-                // To assure the application have just one weather entry per day
-                // per location, it's created a UNIQUE constraint with REPLACE strategy
                 " UNIQUE (" + PropertyContract.PropertyEntry.COLUMN_ADDRESS + ") ON CONFLICT REPLACE);";
 
 

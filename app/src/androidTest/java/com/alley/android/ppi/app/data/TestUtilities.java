@@ -46,49 +46,49 @@ public class TestUtilities extends AndroidTestCase {
         }
     }
 
-    static ContentValues createWeatherValues(long locationRowId) {
-        ContentValues weatherValues = new ContentValues();
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationRowId);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, TEST_DATE);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_LONGTITUDE, 1.1);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_NUM_BEDS, 1.2);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, 1.3);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 75);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE, 65);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, TEST_ADDRESS);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 5.5);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID, 321);
+    static ContentValues createPropertyValues(long locationRowId) {
+        ContentValues propertyValues = new ContentValues();
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationRowId);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, TEST_DATE);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_LONGTITUDE, 1.1);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_NUM_BEDS, 1.2);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, 1.3);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 75);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE, 65);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, TEST_ADDRESS);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 5.5);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID, 321);
 
-        return weatherValues;
+        return propertyValues;
     }
 
-    static ContentValues createWeatherValuesSecond(long locationRowId) {
-        ContentValues weatherValues = new ContentValues();
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationRowId);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, TEST_DATE_SECOND);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_LONGTITUDE, 2.1);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_NUM_BEDS, 2.2);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, 2.3);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 85);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE, 95);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, "Second Aster,oids");
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 6.5);
-        weatherValues.put(PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID, 321);
+    static ContentValues createPropertyValuesSecond(long locationRowId) {
+        ContentValues propertyValues = new ContentValues();
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationRowId);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_DATE, TEST_DATE_SECOND);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_LONGTITUDE, 2.1);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_NUM_BEDS, 2.2);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, 2.3);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 85);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE, 95);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, "Second Aster,oids");
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PRICE, 6.5);
+        propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID, 321);
 
-        return weatherValues;
+        return propertyValues;
     }
 
     static ContentValues createImageValues() {
-        ContentValues weatherValues = new ContentValues();
+        ContentValues propertyValues = new ContentValues();
         byte [] testBytes = new byte[3];
         testBytes[0] = '1';
         testBytes[1]= '2';
         testBytes[2]= '3';
-        weatherValues.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, "testAddress");
-        weatherValues.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, "1");
-        weatherValues.put(PropertyContract.ImageEntry.COLUMN_PHOTO, testBytes);
+        propertyValues.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, "testAddress");
+        propertyValues.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, "1");
+        propertyValues.put(PropertyContract.ImageEntry.COLUMN_PHOTO, testBytes);
 
-        return weatherValues;
+        return propertyValues;
     }
     /*
         Students: You can uncomment this helper function once you have finished creating the
@@ -105,7 +105,7 @@ public class TestUtilities extends AndroidTestCase {
 
     /*
         Students: You can uncomment this function once you have finished creating the
-        LocationEntry part of the PropertyContract as well as the WeatherDbHelper.
+        LocationEntry part of the PropertyContract as well as the PropertyDbHelper.
      */
     static long insertNorthPoleLocationValues(Context context) {
         // insert our test records into the database

@@ -20,7 +20,7 @@
             android:textColor="@color/grey_700" />
 
 
-        <!-- Main content: high, low, art, weather state -->
+        <!-- Main content: -->
         <LinearLayout
             android:gravity="center_horizontal"
             android:layout_height="match_parent"
