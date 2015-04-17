@@ -33,7 +33,10 @@ public class MyHomeAdapterHelper {
 
     public final String LOG_TAG = MyHomeAdapterHelper.class.getSimpleName();
 
-    public MyHomeAdapterHelper() {
+    private int numberOfDaysToKeep;
+
+    public MyHomeAdapterHelper(int numberOfDaysToKeep) {
+        this.numberOfDaysToKeep = numberOfDaysToKeep;
     }
 
     // URL would be something like http://www.myhome.ie/residential/brochure/146-downpatrick-road-crumlin-dublin-12/2896646
@@ -144,7 +147,7 @@ public class MyHomeAdapterHelper {
             // delete old data so we don't build up an endless history
             context.getContentResolver().delete(PropertyContract.ImageEntry.CONTENT_URI,
                     PropertyContract.ImageEntry.COLUMN_DATE + " <= ?",
-                    new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - PropertyPriceSyncAdapter.NUM_DAYS_TO_CLEANUP))});
+                    new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - numberOfDaysToKeep))});
 
         }
 

@@ -19,10 +19,12 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
@@ -45,6 +47,10 @@ public class SettingsActivity extends PreferenceActivity
         // updated when the preference changes.
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_location_key)));
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_county_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_numberOfDaysToKeepProperty)));
+
+        EditTextPreference prefNumDaysToKeep = (EditTextPreference)findPreference(getString(R.string.pref_numberOfDaysToKeepProperty));
+        prefNumDaysToKeep.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
     /**

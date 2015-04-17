@@ -45,6 +45,16 @@ public class Utility {
         return null;
     }
 
+    public static int getPreferredNumberOfDaysToKeep(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String numOfDays = prefs.getString(context.getString(R.string.pref_numberOfDaysToKeepProperty),
+                context.getString(R.string.pref_numberOfDaysToKeepPropertyDefault));
+        if (numOfDays != null) {
+            return Integer.parseInt(numOfDays);
+        }
+        return 365;
+    }
+
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_location_key),

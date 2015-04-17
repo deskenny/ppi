@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
 
 public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
     private String sortOrder = PropertyContract.PropertyEntry.COLUMN_DATE + " DESC";
-    public static final int NUM_DAYS_TO_CLEANUP = 730;
+    public int NUM_DAYS_TO_CLEANUP = 365;
     public final String LOG_TAG = PropertyPriceSyncAdapter.class.getSimpleName();
 
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
@@ -109,6 +109,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d(LOG_TAG, "Starting sync");
+        NUM_DAYS_TO_CLEANUP = Utility.getPreferredNumberOfDaysToKeep(getContext());
         Cursor newBrochuresCursor = null;
         try {
             newBrochuresCursor = getNewBrochureList();
@@ -203,7 +204,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 //Log.i(LOG_TAG, "attempting lookup of " + propertyId + ". " + address + ". " + ppiURL);
                 // read the brochure details
                 readDetailsPage(ppiURL, values);
-                boolean brochureFound = googleHelper.readGoogle(address, values, getContext());
+                boolean brochureFound = googleHelper.readGoogle(address, values, getContext(), NUM_DAYS_TO_CLEANUP);
                 cVVector.add(values);
 
                 if (brochureFound) {

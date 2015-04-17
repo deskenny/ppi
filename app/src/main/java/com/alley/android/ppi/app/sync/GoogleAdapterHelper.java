@@ -21,7 +21,7 @@ public class GoogleAdapterHelper {
 
     public final String LOG_TAG = GoogleAdapterHelper.class.getSimpleName();
 
-    public boolean readGoogle(String address, ContentValues propertyValues, Context context) {
+    public boolean readGoogle(String address, ContentValues propertyValues, Context context, int numberOfDaysToKeep) {
         try {
             String google = "http://www.google.com/search?q=";
             String search = address;
@@ -29,7 +29,7 @@ public class GoogleAdapterHelper {
             String userAgent = "PropertyPriceBot 1.0 (+http://propertyprice.ie/bot)"; // Change this to your company's name and bot homepage!
 
             Elements links = Jsoup.connect(google + URLEncoder.encode(search, charset)).userAgent(userAgent).get().select("li.g>h3>a");
-            MyHomeAdapterHelper myHomeHelper = new MyHomeAdapterHelper();
+            MyHomeAdapterHelper myHomeHelper = new MyHomeAdapterHelper(numberOfDaysToKeep);
             for (Element link : links) {
                 String title = link.text();
                 String url = link.absUrl("href"); // Google returns URLs in format "http://www.google.com/url?q=<url>&sa=U&ei=<someKey>".

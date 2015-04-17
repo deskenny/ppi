@@ -130,6 +130,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         //Log.i(LOG_TAG, "onCreate");
         setHasOptionsMenu(true);
         readCameraSettingsFromPreferences();
+
     }
 
     private void readCameraSettingsFromPreferences() {
@@ -302,7 +303,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         Uri propertyForLocationUri = null;
 
         propertyForLocationUri = PropertyContract.PropertyEntry.buildPropertiesLocationWithStartDate(
-                locationSetting, System.currentTimeMillis() - TimeUnit.DAYS.toMillis(PropertyPriceSyncAdapter.NUM_DAYS_TO_CLEANUP));
+                locationSetting, System.currentTimeMillis() - TimeUnit.DAYS.toMillis(Utility.getPreferredNumberOfDaysToKeep(this.getActivity())));
 
         return new CursorLoader(getActivity(),
                 propertyForLocationUri,

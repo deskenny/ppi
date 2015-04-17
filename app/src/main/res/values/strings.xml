@@ -101,6 +101,12 @@
     <string name="pref_county_wexford" translatable="false">Wexford</string>
     <string name="pref_county_wicklow" translatable="false">Wicklow</string>
 
+    <string name="pref_numberOfDaysToKeepProperty" translatable="false">num_days_to_keep</string>
+    <string name="pref_numberOfDaysToKeepPropertyDefault" translatable="false">365</string>
+
+    <string name="pref_num_days_keep_label" translatable="false">Number of days to keep brochures</string>
+
+
     <!-- Language-specific constants -->
     <string name="today">Today</string>
 
