@@ -37,43 +37,45 @@ public class MyHomeAdapterHelper {
     }
 
     // URL would be something like http://www.myhome.ie/residential/brochure/146-downpatrick-road-crumlin-dublin-12/2896646
-    public boolean readMyHomeBrochurePage(String link, ContentValues brochureValues, String address, Context context) throws IOException, JSONException  {
-        Log.i(LOG_TAG, "URL: " + link);
-        brochureValues.put(PropertyContract.PropertyEntry.COLUMN_MY_HOME_BROCHURE_URL, link);
+    public boolean readMyHomeBrochurePage(String link, ContentValues brochureValues, String address, Context context) {
+        try {
+            Log.i(LOG_TAG, "URL: " + link);
+            brochureValues.put(PropertyContract.PropertyEntry.COLUMN_MY_HOME_BROCHURE_URL, link);
 
-        Document doc = Jsoup.connect(link).get();
-        readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_ADDRESS, "brochureAddress");
-        String addressFromBrochure = (String) brochureValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
-        Log.i(LOG_TAG, "addressFromBrochure: " + addressFromBrochure);
-        addressFromBrochure =  Utility.standardiseAddress(addressFromBrochure);
-        if (Utility.isMatchedAddress(addressFromBrochure, address)) {
-            brochureValues.remove(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
-            brochureValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, address);
-            String detailedDescription = "";
-            Elements elements = doc.select("h2[class=brochureDescription]");
-            for (Element element : elements) {
-                detailedDescription = element.text();
-                // Element will be something like ..... Sale Agreed - 3 Bed Terraced House 60 m² / 646 ft² Sale Agreed
-                Log.i(LOG_TAG, "elementText: " + detailedDescription);
-                int indexOfBed = detailedDescription.indexOf("Bed");
-                int indexOfHyphen = detailedDescription.indexOf("-");
-                int indexOfMetresSquared = detailedDescription.indexOf("m²");
+            Document doc = Jsoup.connect(link).get();
+            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_ADDRESS, "brochureAddress");
+            String addressFromBrochure = (String) brochureValues.get(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
+            Log.i(LOG_TAG, "addressFromBrochure: " + addressFromBrochure);
+            addressFromBrochure = Utility.standardiseAddress(addressFromBrochure);
+            if (Utility.isMatchedAddress(addressFromBrochure, address)) {
+                brochureValues.remove(PropertyContract.PropertyEntry.COLUMN_ADDRESS);
+                brochureValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, address);
+                String detailedDescription = "";
+                Elements elements = doc.select("h2[class=brochureDescription]");
+                for (Element element : elements) {
+                    detailedDescription = element.text();
+                    // Element will be something like ..... Sale Agreed - 3 Bed Terraced House 60 m² / 646 ft² Sale Agreed
+                    Log.i(LOG_TAG, "elementText: " + detailedDescription);
+                    int indexOfBed = detailedDescription.indexOf("Bed");
+                    int indexOfHyphen = detailedDescription.indexOf("-");
+                    int indexOfMetresSquared = detailedDescription.indexOf("m²");
 
-                readMyHomeReadNumberBedrooms(detailedDescription, indexOfBed, indexOfHyphen, brochureValues);
-                readMyHomeSquareFootage(detailedDescription, indexOfBed, indexOfHyphen, indexOfMetresSquared, brochureValues);
+                    readMyHomeReadNumberBedrooms(detailedDescription, indexOfBed, indexOfHyphen, brochureValues);
+                    readMyHomeSquareFootage(detailedDescription, indexOfBed, indexOfHyphen, indexOfMetresSquared, brochureValues);
+                }
+                readLocation(doc, brochureValues);
+                readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC, "contentDescription content0");
+                readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_HEADER_FEATURES, "contentFeatures content1");
+                readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_BER_DETAILS, "contentBER Details content2");
+                readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION, "contentAccommodation content3");
+                storeImages(doc, brochureValues, context);
+                calculateClass(brochureValues);
+                return true;
             }
-            readLocation(doc, brochureValues);
-            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC, "contentDescription content0");
-            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_HEADER_FEATURES, "contentFeatures content1");
-            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_BER_DETAILS, "contentBER Details content2");
-            readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION, "contentAccommodation content3");
-            storeImages(doc, brochureValues, context);
-            calculateClass(brochureValues);
-            return true;
+        } catch (Exception e ) {
+            Log.e(LOG_TAG, e.getMessage());
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
 
@@ -124,21 +126,11 @@ public class MyHomeAdapterHelper {
     private void addImages(Vector<ContentValues> cVVector, Context context)
             throws JSONException {
 
-        // OWM returns daily forecasts based upon the local time of the city that is being
-        // asked for, which means that we need to know the GMT offset to translate this data
-        // properly.
-
-        // Since this data is also sent in-order and the first day is always the
-        // current day, we're going to take advantage of that to get a nice
-        // normalized UTC date for all of our property.
-
         Time dayTime = new Time();
         dayTime.setToNow();
 
-        // we start at the day returned by local time. Otherwise this is a mess.
         int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
 
-        // now we work exclusively in UTC
         dayTime = new Time();
 
 
