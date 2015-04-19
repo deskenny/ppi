@@ -33,10 +33,7 @@ public class MyHomeAdapterHelper {
 
     public final String LOG_TAG = MyHomeAdapterHelper.class.getSimpleName();
 
-    private int numberOfDaysToKeep;
-
-    public MyHomeAdapterHelper(int numberOfDaysToKeep) {
-        this.numberOfDaysToKeep = numberOfDaysToKeep;
+    public MyHomeAdapterHelper() {
     }
 
     // URL would be something like http://www.myhome.ie/residential/brochure/146-downpatrick-road-crumlin-dublin-12/2896646
@@ -129,26 +126,10 @@ public class MyHomeAdapterHelper {
     private void addImages(Vector<ContentValues> cVVector, Context context)
             throws JSONException {
 
-        Time dayTime = new Time();
-        dayTime.setToNow();
-
-        int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
-
-        dayTime = new Time();
-
-
-        int inserted = 0;
-        // add to database
         if (cVVector.size() > 0) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
             context.getContentResolver().bulkInsert(PropertyContract.ImageEntry.CONTENT_URI, cvArray);
-
-            // delete old data so we don't build up an endless history
-            context.getContentResolver().delete(PropertyContract.ImageEntry.CONTENT_URI,
-                    PropertyContract.ImageEntry.COLUMN_DATE + " <= ?",
-                    new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - numberOfDaysToKeep))});
-
         }
 
         Log.d(LOG_TAG, "Image Sync Complete. " + cVVector.size() + " Inserted");

@@ -114,6 +114,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             newBrochuresCursor = getNewBrochureList();
             if (newBrochuresCursor.getCount() == 0) {
+                doDeleteOld();
                 doOverviewSync(account, extras, authority, provider, syncResult);
                 doDetailSync(newBrochuresCursor, account, extras, authority, provider, syncResult);
             } else {
@@ -130,6 +131,26 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    private void doDeleteOld() {
+        // want to delete the old property brochures and also more importantly the images!!!
+        // could I do cascade delete here, if I had proper foreign key?
+        Time dayTime = new Time();
+        dayTime.setToNow();
+
+        int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
+
+        dayTime = new Time();
+
+        getContext().getContentResolver().delete(PropertyContract.PropertyEntry.CONTENT_URI,
+                PropertyContract.PropertyEntry.COLUMN_DATE + " <= ?",
+                new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
+
+        getContext().getContentResolver().delete(PropertyContract.ImageEntry.CONTENT_URI,
+                PropertyContract.ImageEntry.COLUMN_DATE + " <= ?",
+                new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
+
+
+    }
 
     private static final String sLoadBrochureSelection =
             PropertyContract.PropertyEntry.TABLE_NAME + "." + PropertyContract.PropertyEntry.COLUMN_BROCHURE_READ_ATTEMPTED + " = ?";
@@ -204,7 +225,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 //Log.i(LOG_TAG, "attempting lookup of " + propertyId + ". " + address + ". " + ppiURL);
                 // read the brochure details
                 readDetailsPage(ppiURL, values);
-                boolean brochureFound = googleHelper.readGoogle(address, values, getContext(), NUM_DAYS_TO_CLEANUP);
+                boolean brochureFound = googleHelper.readGoogle(address, values, getContext());
                 cVVector.add(values);
 
                 if (brochureFound) {
@@ -361,36 +382,10 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
     private void addPropertyPrices(Vector<ContentValues> cVVector)
             throws JSONException {
 
-        // OWM returns daily forecasts based upon the local time of the city that is being
-        // asked for, which means that we need to know the GMT offset to translate this data
-        // properly.
-
-        // Since this data is also sent in-order and the first day is always the
-        // current day, we're going to take advantage of that to get a nice
-        // normalized UTC date for all of our property.
-
-        Time dayTime = new Time();
-        dayTime.setToNow();
-
-        // we start at the day returned by local time. Otherwise this is a mess.
-        int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
-
-        // now we work exclusively in UTC
-        dayTime = new Time();
-
-
-        int inserted = 0;
-        // add to database
         if (cVVector.size() > 0) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
             getContext().getContentResolver().bulkInsert(PropertyContract.PropertyEntry.CONTENT_URI, cvArray);
-
-            // delete old data so we don't build up an endless history
-            getContext().getContentResolver().delete(PropertyContract.PropertyEntry.CONTENT_URI,
-                    PropertyContract.PropertyEntry.COLUMN_DATE + " <= ?",
-                    new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
-
             notifyProperties();
         }
 
