@@ -25,6 +25,12 @@
         android:inputType="text"
         android:singleLine="true" />
 
+    <EditTextPreference
+        android:title="@string/pref_months_ago_to_search_label"
+        android:key="@string/pref_months_ago_to_search"
+        android:defaultValue="@string/pref_months_ago_to_search_default"
+        android:inputType="text"
+        android:singleLine="true" />
 
     <CheckBoxPreference
         android:title="@string/pref_enable_notifications_label"
