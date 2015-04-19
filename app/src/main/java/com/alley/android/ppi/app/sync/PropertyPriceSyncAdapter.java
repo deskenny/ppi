@@ -276,22 +276,37 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             String countyKey = context.getString(R.string.pref_county_key);
             String locationKey = context.getString(R.string.pref_location_key);
+            String monthsBackKey = context.getString(R.string.pref_months_ago_to_search);
+
             String county = prefs.getString(countyKey,
                     context.getString(R.string.pref_county_dublin));
             String location = prefs.getString(locationKey,
                     context.getString(R.string.pref_location_default));
 
+            String sMonthsAgoToSearch = prefs.getString(monthsBackKey,
+                    context.getString(R.string.pref_months_ago_to_search_default));
+
+
+            int monthsAgoToSearch = 3;
+            try {
+                monthsAgoToSearch = Integer.parseInt(sMonthsAgoToSearch);
+            }
+            catch (Exception pe) {
+                Log.e(LOG_TAG, "problem reading monthsAgoToSearch" + sMonthsAgoToSearch);
+            }
             Calendar cal = GregorianCalendar.getInstance();
-            String fromDate = "01/01/" + cal.get(Calendar.YEAR);
-            String toDate = cal.get(Calendar.DAY_OF_MONTH) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR);
+            Calendar currentTime = GregorianCalendar.getInstance();
+            cal.add(Calendar.MONTH, -(monthsAgoToSearch));
+            String fromDate = "01/" + (cal.get(Calendar.MONTH)+1) + "/" + cal.get(Calendar.YEAR);
+            String toDate = currentTime.get(Calendar.DAY_OF_MONTH) + "/" + (currentTime.get(Calendar.MONTH) + 1) + "/" + currentTime.get(Calendar.YEAR);
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                     .appendQueryParameter("Start", "1")
                     .appendQueryParameter("SearchMax", "0")
                     .appendQueryParameter("SearchOrder", "4")
                     .appendQueryParameter(QUERY_PARAM, "[dt_execution_date]>=" + fromDate + " AND [dt_execution_date]<" + toDate + " AND [address]=*" + location + "* AND [dc_county]=\"" + county + "\"")
-                    .appendQueryParameter(YEAR_PARAM, "" + cal.get(Calendar.YEAR))
-                    .appendQueryParameter(START_MONTH_PARAM, "01")
-                    .appendQueryParameter(END_MONTH_PARAM, "" + cal.get(Calendar.MONTH))
+                    .appendQueryParameter(YEAR_PARAM, "" + currentTime.get(Calendar.YEAR))
+                    .appendQueryParameter(START_MONTH_PARAM, "" + cal.get(Calendar.MONTH))
+                    .appendQueryParameter(END_MONTH_PARAM, "" + currentTime.get(Calendar.MONTH))
                     .appendQueryParameter(ADDRESS_PARAM, location)
                     .build();
 
@@ -299,7 +314,9 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
 
             Vector<ContentValues> cVVector = new Vector<ContentValues>(4);
 
-            URL url = new URL(builtUri.toString());
+            String sURI = builtUri.toString();
+            URL url = new URL(sURI);
+            Log.i(LOG_TAG, "Checking register with: " + sURI);
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
