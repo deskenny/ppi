@@ -9,22 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * {@link OverviewAdapter} exposes a list of Properties
- * from a {@link Cursor} to a {@link android.widget.ListView}.
- */
 public class OverviewAdapter extends CursorAdapter {
 
     private static final int VIEW_TYPE_COUNT = 2;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
 
-    // Flag to determine if we want to use a separate view for "today".
     private boolean mUseTodayLayout = true;
 
-    /**
-     * Cache of the children views for a forecast list item.
-     */
     public static class ViewHolder {
         public final ImageView iconView;
         public final TextView dateView;
@@ -47,7 +39,6 @@ public class OverviewAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        // Choose the layout type
         int viewType = getItemViewType(cursor.getPosition());
         int layoutId = -1;
         switch (viewType) {
@@ -77,14 +68,12 @@ public class OverviewAdapter extends CursorAdapter {
         int viewType = getItemViewType(cursor.getPosition());
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
-                // Get property icon
                 viewHolder.iconView.setImageResource(Utility.getArtResourceForPropType(
                         cursor.getInt(OverviewFragment.COLUMN_PROP_TYPE_ID),
                         cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS)));
                 break;
             }
             case VIEW_TYPE_FUTURE_DAY: {
-                // Get property icon
                 viewHolder.iconView.setImageResource(Utility.getIconResourceForPropType(
                         cursor.getInt(OverviewFragment.COLUMN_PROP_TYPE_ID),
                         cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS)));
@@ -92,24 +81,17 @@ public class OverviewAdapter extends CursorAdapter {
             }
         }
 
-        // Read date from cursor
         long dateInMillis = cursor.getLong(OverviewFragment.COL_DATE);
-        // Find TextView and set formatted date on it
         viewHolder.dateView.setText(Utility.getFriendlyDayString(context, dateInMillis));
 
-        // Read property forecast from cursor
         String description = cursor.getString(OverviewFragment.COL_DESCRIPTION);
-        // Find TextView and set property forecast on it
         viewHolder.descriptionView.setText(description);
 
-        // For accessibility, add a content description to the icon field
         viewHolder.iconView.setContentDescription(description);
 
-        // Read price from cursor
         String price = cursor.getString(OverviewFragment.COL_PRICE);
         viewHolder.priceView.setText(Utility.formatPrice(context, price));
 
-        // Read low temperature from cursor
         String numBeds = cursor.getString(OverviewFragment.COLUMN_NUM_BEDS);
         if (numBeds != null && !numBeds.equalsIgnoreCase("")) {
             viewHolder.numBedsView.setText(numBeds + " bed");

@@ -154,7 +154,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mTitleAccommodation = (TextView) rootView.findViewById(R.id.detail_title_accommodation_textview);
         mTitleBer = (TextView) rootView.findViewById(R.id.detail_title_ber_textview);
 
-        // Get a reference to the ListView, and attach this adapter to it.
         recList = (RecyclerView) rootView.findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -168,16 +167,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.detailfragment, menu);
 
-        // Retrieve the share menu item
         MenuItem menuItem = menu.findItem(R.id.action_share);
 
-        // Get the provider and hold onto it to set/change the share intent.
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
-        // If onLoadFinished happens before this, we can go ahead and set the share intent now.
         if (mForecast != null) {
             mShareActionProvider.setShareIntent(createShareForecastIntent());
         }
@@ -199,7 +194,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     void onLocationChanged( String newLocation ) {
-        // replace the uri, since the location has changed
         Uri uri = mDetailUri;
         if (null != uri) {
             String address = PropertyContract.PropertyEntry.getAddressFromUri(uri);
@@ -213,8 +207,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if ( null != mDetailUri) {
-            // Now create and return a CursorLoader that will take care of
-            // creating a Cursor for the data being displayed.
             if (id == DETAIL_LOADER) {
                 return new CursorLoader(
                         getActivity(),
@@ -254,35 +246,28 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     public void onLoadFinishedDetail(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
-            // Read property condition ID from cursor
             int propertyId = data.getInt(COL_PROPERTY_CONDITION_ID);
             int numberOfBeds = data.getInt(COL_NUM_BEDS);
             float squareArea = data.getFloat(COL_SQUARE_AREA);
 
-            // Use property art image
             mIconView.setImageResource(Utility.getArtResourceForPropType(propertyId, numberOfBeds));
 
-            // Read date from cursor and update views for day of week and date
             long date = data.getLong(COL_PROPERTY_DATE);
             String dateText = Utility.getFormattedMonthDay(getActivity(), date);
             mDateView.setText(dateText  + " - " + numberOfBeds + " bed, " + squareArea + "m²");
 
-            // Read description from cursor and update view
             String description = data.getString(COL_PROPERTY_DESC);
             mDescriptionView.setText(description);
 
-            // For accessibility, add a content description to the icon field
             mIconView.setContentDescription(description);
 
             String price = data.getString(COL_PRICE);
             String priceString = Utility.formatPrice(getActivity(), price);
             mPriceView.setText(priceString);
 
-            // Read wind speed and direction from cursor and update view
             float latitude = data.getFloat(COL_LATITUDE);
             float windDirStr = data.getFloat(COL_LONGTITUDE);
 
-            // read the description
             String contentDescription = data.getString(COL_CONTENT_DESCRIPTION);
             mContentDescription.setText(contentDescription);
 
@@ -295,10 +280,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String ber = data.getString(COLUMN_BER);
             mBer.setText(ber);
 
-            // We still need this for the share intent
             mForecast = String.format("%s - %s - %s/%s", dateText, description, price, price);
 
-            // If onCreateOptionsMenu has already happened, we need to update the share intent now.
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareForecastIntent());
             }

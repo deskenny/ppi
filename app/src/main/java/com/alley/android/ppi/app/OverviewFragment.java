@@ -72,12 +72,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     private float zoom = 0;
 
     private static final String[] PROPERTY_LIST_COLUMNS = {
-            // In this case the id needs to be fully qualified with a table name, since
-            // the content provider joins the location & property tables in the background
-            // (both have an _id column)
-            // On the one hand, that's annoying.  On the other, you can search the property table
-            // using the location set by the user, which is only in the Location table.
-            // So the convenience is worth it.
             PropertyContract.PropertyEntry.TABLE_NAME + "." + PropertyContract.PropertyEntry._ID,
             PropertyContract.PropertyEntry.COLUMN_DATE,
             PropertyContract.PropertyEntry.COLUMN_PRICE,
@@ -89,8 +83,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             PropertyContract.PropertyEntry.COLUMN_LONGTITUDE
     };
 
-    // These indices are tied to PROPERTY_LIST_COLUMNS.  If PROPERTY_LIST_COLUMNS changes, these
-    // must change.
     static final int COL_PROPERTY_ID = 0;
     static final int COL_DATE = 1;
     static final int COL_PRICE = 2;
@@ -108,15 +100,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         mRefreshLayout.setRefreshing(false);
     }
 
-    /**
-     * A callback interface that all activities containing this fragment must
-     * implement. This mechanism allows activities to be notified of item
-     * selections.
-     */
     public interface Callback {
-        /**
-         * DetailFragmentCallback for when an item has been selected.
-         */
         public void onItemSelected(Uri dateUri);
     }
 
@@ -195,20 +179,16 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         mRefreshLayout.setRefreshing(true);
         Log.i(OverviewFragment.LOG_TAG, "setting mRefreshLayout " + mRefreshLayout);
 
-        // Get a reference to the ListView, and attach this adapter to it.
         mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         mListView.setAdapter(mOverviewAdapter);
         View emptyView = rootView.findViewById(R.id.frame_empty);
         Log.i(LOG_TAG, "setting empty view " + emptyView);
         mListView.setEmptyView(emptyView);
 
-        // We'll call our MainActivity
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // CursorAdapter returns a cursor at the correct position for getItem(), or null
-                // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
@@ -220,14 +200,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             }
         });
 
-        // If there's instance state, mine it for useful information.
-        // The end-goal here is that the user never knows that turning their device sideways
-        // does crazy lifecycle related things.  It should feel like some stuff stretched out,
-        // or magically appeared to take advantage of room, but data or place in the app was never
-        // actually *lost*.
         if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
-            // The listview probably hasn't even been populated yet.  Actually perform the
-            // swapout in onLoadFinished.
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
 
@@ -242,7 +215,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         super.onActivityCreated(savedInstanceState);
     }
 
-    // since we read the location when we create the loader, all we need to do is restart things
     void onLocationChanged() {
         updateProperty();
         getLoaderManager().restartLoader(PROPERTY_TOP_LEVEL_LOADER, null, this);
@@ -255,9 +227,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void openPreferredLocationInMap() {
-        // Using the URI scheme for showing a location found on a map.  This super-handy
-        // intent can is detailed in the "Common Intents" page of Android's developer site:
-        // http://developer.android.com/guide/components/intents-common.html#Maps
         if (null != mOverviewAdapter) {
             Cursor c = mOverviewAdapter.getCursor();
             if (null != c) {
@@ -281,9 +250,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        // When tablets rotate, the currently selected list item needs to be saved.
-        // When no item is selected, mPosition will be set to Listview.INVALID_POSITION,
-        // so check for that before storing.
         if (mPosition != ListView.INVALID_POSITION) {
             outState.putInt(SELECTED_KEY, mPosition);
         }
@@ -292,12 +258,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-        // This is called when a new Loader needs to be created.  This
-        // fragment only uses one loader, so we don't care about checking the id.
-
-        // To only show current and future dates, filter the query to return property only for
-        // dates after or including today.
-        // Sort order:  Ascending, by date.
         String sortOrder = PropertyContract.PropertyEntry.COLUMN_DATE + " DESC";
         String locationSetting = Utility.getPreferredLocation(getActivity());
         Uri propertyForLocationUri = null;

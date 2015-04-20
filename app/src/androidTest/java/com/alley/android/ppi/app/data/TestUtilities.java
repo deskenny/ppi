@@ -15,11 +15,6 @@ import com.alley.android.ppi.app.utils.PollingCheck;
 import java.util.Map;
 import java.util.Set;
 
-/*
-    Students: These are functions and some test data to make it easier to test your database and
-    Content Provider.  Note that you'll want your PropertyContract class to exactly match the one
-    in our solution to use these as-given.
- */
 public class TestUtilities extends AndroidTestCase {
     static final String TEST_LOCATION = "99705";
     static final String TEST_ADDRESS = "\"Aster,oids\"";
@@ -90,12 +85,7 @@ public class TestUtilities extends AndroidTestCase {
 
         return propertyValues;
     }
-    /*
-        Students: You can uncomment this helper function once you have finished creating the
-        LocationEntry part of the PropertyContract.
-     */
-    static ContentValues createNorthPoleLocationValues() {
-        // Create a new map of values, where column names are the keys
+    static ContentValues createTestLocationValues() {
         ContentValues testValues = new ContentValues();
         testValues.put(PropertyContract.LocationEntry.COLUMN_SEARCH_STRING_USED, TEST_LOCATION);
         testValues.put(PropertyContract.LocationEntry.COLUMN_CITY_NAME, "North Pole");
@@ -103,33 +93,19 @@ public class TestUtilities extends AndroidTestCase {
         return testValues;
     }
 
-    /*
-        Students: You can uncomment this function once you have finished creating the
-        LocationEntry part of the PropertyContract as well as the PropertyDbHelper.
-     */
     static long insertNorthPoleLocationValues(Context context) {
-        // insert our test records into the database
         PropertyDbHelper dbHelper = new PropertyDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
+        ContentValues testValues = TestUtilities.createTestLocationValues();
 
         long locationRowId;
         locationRowId = db.insert(PropertyContract.LocationEntry.TABLE_NAME, null, testValues);
 
-        // Verify we got a row back.
         assertTrue("Error: Failure to insert North Pole Location Values", locationRowId != -1);
 
         return locationRowId;
     }
 
-    /*
-        Students: The functions we provide inside of TestProvider use this utility class to test
-        the ContentObserver callbacks using the PollingCheck class that we grabbed from the Android
-        CTS tests.
-
-        Note that this only tests that the onChange function is called; it does not test that the
-        correct Uri is returned.
-     */
     static class TestContentObserver extends ContentObserver {
         final HandlerThread mHT;
         boolean mContentChanged;
