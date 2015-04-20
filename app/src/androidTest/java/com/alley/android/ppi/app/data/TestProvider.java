@@ -131,7 +131,7 @@ public class TestProvider extends AndroidTestCase {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues testValues = TestUtilities.createTestLocationValues();
-        long locationRowId = TestUtilities.insertNorthPoleLocationValues(mContext);
+        long locationRowId = TestUtilities.insertHaroldsCrossLocationValues(mContext);
 
         ContentValues propertyValues = TestUtilities.createPropertyValues(locationRowId);
 
@@ -156,7 +156,7 @@ public class TestProvider extends AndroidTestCase {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues testValues = TestUtilities.createTestLocationValues();
-        long locationRowId = TestUtilities.insertNorthPoleLocationValues(mContext);
+        long locationRowId = TestUtilities.insertHaroldsCrossLocationValues(mContext);
 
         Cursor locationCursor = mContext.getContentResolver().query(
                 LocationEntry.CONTENT_URI,
@@ -264,30 +264,6 @@ public class TestProvider extends AndroidTestCase {
         );
 
         TestUtilities.validateCursor("testInsertReadProvider. Error validating PropertyEntry insert.",
-                propertyCursor, propertyValues);
-
-        propertyValues.putAll(testValues);
-
-        propertyCursor = mContext.getContentResolver().query(
-                PropertyContract.PropertyEntry.buildPropertyLocation(TestUtilities.TEST_LOCATION),
-                null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
-                null, // values for "where" clause
-                null  // sort order
-        );
-        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Property and Location Data.",
-                propertyCursor, propertyValues);
-
-        // Get the joined Property and Location data with a start date
-        propertyCursor = mContext.getContentResolver().query(
-                PropertyContract.PropertyEntry.buildPropertiesLocationWithStartDate(
-                        TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
-                null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
-                null, // values for "where" clause
-                null  // sort order
-        );
-        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Property and Location Data with start date.",
                 propertyCursor, propertyValues);
 
         // Get the joined Property data for a specific date
@@ -428,7 +404,7 @@ public class TestProvider extends AndroidTestCase {
         cursor = mContext.getContentResolver().query(
                 PropertyContract.ImageEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
-                "address = testAddress", // cols for "where" clause
+                "address = 'testAddress'", // cols for "where" clause
                 null, // values for "where" clause
                 null  // sort order
         );

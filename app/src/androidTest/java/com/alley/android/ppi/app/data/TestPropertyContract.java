@@ -24,7 +24,7 @@ import com.alley.android.ppi.app.Utility;
 public class TestPropertyContract extends AndroidTestCase {
 
     // intentionally includes a slash to make sure Uri is getting quoted correctly
-    private static final String TEST_PPI_LOCATION = "/North Pole";
+    private static final String TEST_PPI_LOCATION = "/Harolds Cross";
     private static final long TEST_PPI_DATE = 1419033600L;  // December 20th, 2014
 
     public void testBuildPropertyLocation() {
@@ -36,7 +36,7 @@ public class TestPropertyContract extends AndroidTestCase {
                 TEST_PPI_LOCATION, locationUri.getLastPathSegment());
         assertEquals("Error: Property location Uri doesn't match our expected result",
                 locationUri.toString(),
-                "content://com.alley.android.ppi.app/property/%2FNorth%20Pole");
+                "content://com.alley.android.ppi.app/property/%2FHarolds%20Cross");
     }
 
 

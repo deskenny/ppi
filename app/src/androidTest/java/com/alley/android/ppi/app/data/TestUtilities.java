@@ -82,18 +82,19 @@ public class TestUtilities extends AndroidTestCase {
         propertyValues.put(PropertyContract.ImageEntry.COLUMN_ADDRESS, "testAddress");
         propertyValues.put(PropertyContract.ImageEntry.COLUMN_IS_PRIMARY, "1");
         propertyValues.put(PropertyContract.ImageEntry.COLUMN_PHOTO, testBytes);
+        propertyValues.put(PropertyContract.ImageEntry.COLUMN_DATE, System.currentTimeMillis());
 
         return propertyValues;
     }
     static ContentValues createTestLocationValues() {
         ContentValues testValues = new ContentValues();
         testValues.put(PropertyContract.LocationEntry.COLUMN_SEARCH_STRING_USED, TEST_LOCATION);
-        testValues.put(PropertyContract.LocationEntry.COLUMN_CITY_NAME, "North Pole");
+        testValues.put(PropertyContract.LocationEntry.COLUMN_CITY_NAME, "Harolds Cross");
 
         return testValues;
     }
 
-    static long insertNorthPoleLocationValues(Context context) {
+    static long insertHaroldsCrossLocationValues(Context context) {
         PropertyDbHelper dbHelper = new PropertyDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createTestLocationValues();
@@ -101,7 +102,7 @@ public class TestUtilities extends AndroidTestCase {
         long locationRowId;
         locationRowId = db.insert(PropertyContract.LocationEntry.TABLE_NAME, null, testValues);
 
-        assertTrue("Error: Failure to insert North Pole Location Values", locationRowId != -1);
+        assertTrue("Error: Failure to insert Harolds Cross Location Values", locationRowId != -1);
 
         return locationRowId;
     }
