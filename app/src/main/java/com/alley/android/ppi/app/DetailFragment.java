@@ -51,7 +51,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String PROPERTY_PRICE_SHARE_HASHTAG = " #PropertyPriceIreland";
 
     private ShareActionProvider mShareActionProvider;
-    private String mForecast;
+    private String mPropertyDescription;
     private Uri mDetailUri;
     private Uri mDetailImageUri;
 
@@ -117,7 +117,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mFeaturesDescription;
     private TextView mAccommodation;
     private TextView mBer;
-
     private TextView mTitleDescription;
     private TextView mTitleFeatures;
     private TextView mTitleAccommodation;
@@ -171,7 +170,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private Point getScreenSize() {
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
-        display.getSize(size);
+        // dont use this anymore, probably can remove. Only if we wanted detail popup image full screen size.
+        // display.getSize(size);
         return size;
     }
 
@@ -183,16 +183,16 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
-        if (mForecast != null) {
-            mShareActionProvider.setShareIntent(createShareForecastIntent());
+        if (mPropertyDescription != null) {
+            mShareActionProvider.setShareIntent(createSharePropertyIntent());
         }
     }
 
-    private Intent createShareForecastIntent() {
+    private Intent createSharePropertyIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast + PROPERTY_PRICE_SHARE_HASHTAG);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mPropertyDescription + PROPERTY_PRICE_SHARE_HASHTAG);
         return shareIntent;
     }
 
@@ -260,11 +260,28 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             int numberOfBeds = data.getInt(COL_NUM_BEDS);
             float squareArea = data.getFloat(COL_SQUARE_AREA);
 
-            mIconView.setImageResource(Utility.getArtResourceForPropType(propertyId, numberOfBeds));
+//            mIconView.setImageResource(Utility.getArtResourceForPropType(propertyId, numberOfBeds));
+
+            int artWork = Utility.getArtResourceForPropType(propertyId, numberOfBeds);
+            mIconView.setImageResource(artWork);
 
             long date = data.getLong(COL_PROPERTY_DATE);
             String dateText = Utility.getFormattedMonthDay(getActivity(), date);
-            mDateView.setText(dateText  + " - " + numberOfBeds + " bed, " + squareArea + "m²");
+
+            if (R.drawable.art_spinner == artWork) {
+                dateText =  dateText  + " - " + getActivity().getString(R.string.come_back_later);
+                recList.setVisibility(View.GONE);
+            }
+            else if (artWork == R.drawable.art_second_hand || artWork == R.drawable.art_no_vat) {
+                dateText =  dateText  + " - " + getActivity().getString(R.string.could_not_find_full_brochure);
+                recList.setVisibility(View.GONE);
+            }
+            else {
+                dateText = dateText + " - " + numberOfBeds + " bed, " + squareArea + "m²";
+                recList.setVisibility(View.VISIBLE);
+            }
+
+            mDateView.setText(dateText);
 
             String description = data.getString(COL_PROPERTY_DESC);
             mDescriptionView.setText(description);
@@ -274,9 +291,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String price = data.getString(COL_PRICE);
             String priceString = Utility.formatPrice(getActivity(), price);
             mPriceView.setText(priceString);
-
-            float latitude = data.getFloat(COL_LATITUDE);
-            float windDirStr = data.getFloat(COL_LONGTITUDE);
 
             String contentDescription = data.getString(COL_CONTENT_DESCRIPTION);
             mContentDescription.setText(contentDescription);
@@ -290,10 +304,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String ber = data.getString(COLUMN_BER);
             mBer.setText(ber);
 
-            mForecast = String.format("%s - %s - %s/%s", dateText, description, price, price);
+            mPropertyDescription = String.format("%s - %s - %s", dateText, description, price);
 
             if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareForecastIntent());
+                mShareActionProvider.setShareIntent(createSharePropertyIntent());
             }
             String brochureSuccess = data.getString(COLUMN_BROCHURE_SUCCESS);
             if (brochureSuccess != null && brochureSuccess.equalsIgnoreCase("1")) {
@@ -310,7 +324,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mFeaturesDescription.setVisibility(visibility);
         mAccommodation.setVisibility(visibility);
         mBer.setVisibility(visibility);
-        recList.setVisibility(visibility);
 
         if (mTitleDescription != null) {
             mTitleDescription.setVisibility(visibility);

@@ -32,6 +32,7 @@
                 android:gravity="left"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_weight="0.7"
                 android:orientation="vertical">
 
                 <TextView
@@ -39,7 +40,8 @@
                     android:id="@+id/detail_price_textview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textSize="80sp" />
+                    android:textSize="60sp"
+                    android:gravity="center_vertical"/>
 
                 <TextView
                     android:id="@+id/detail_date_textview"
@@ -47,7 +49,8 @@
                     android:layout_width="wrap_content"
                     android:textColor="@color/grey_700"
                     android:textSize="16sp"
-                    android:fontFamily="sans-serif-condensed"  />
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center_vertical"/>
 
             </LinearLayout>
 
@@ -56,6 +59,7 @@
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_weight="0.3"
                 android:orientation="vertical">
 
                 <ImageView

@@ -8,13 +8,13 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="top">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/cardList"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="top" />
+            android:layout_height="250dp"/>
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -35,7 +35,7 @@
                 android:textSize="96sp" />
 
             <LinearLayout
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:padding="16dp">

@@ -80,10 +80,12 @@ public class PropertyContract {
 
         public static final String TABLE_NAME = "property";
 
-        // Column with the foreign key into the location table.
+
         public static final String COLUMN_LOC_KEY = "location_id";
-        // Date, stored as long in milliseconds since the epoch
+
         public static final String COLUMN_DATE = "date";
+
+        public static final String COLUMN_READ_FROM_REGISTER_DATE = "read_from_reg_date";
 
         public static final String COLUMN_PROP_TYPE_ID = "prop_type_id";
 

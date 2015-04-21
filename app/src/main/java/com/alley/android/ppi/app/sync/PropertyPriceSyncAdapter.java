@@ -354,6 +354,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                     propertyValues.put(PropertyContract.PropertyEntry.COLUMN_ADDRESS, Utility.standardiseAddress(address));
                     String link = PROPERTY_PRICE_BASE_URL + readLink(fullAddress);
                     propertyValues.put(PropertyContract.PropertyEntry.COLUMN_PROPERTY_PRICE_REGISTER_URL, link);
+                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_READ_FROM_REGISTER_DATE, System.currentTimeMillis());
 
                     // all this stuff here, just because dont want to delete yet
                     propertyValues.put(PropertyContract.PropertyEntry.COLUMN_LOC_KEY, locationId);
@@ -413,62 +414,48 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
     private void notifyProperties() {
 
         Context context = getContext();
-        //checking the last update and notify if it' the first of the day
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String displayNotificationsKey = context.getString(R.string.pref_enable_notifications_key);
         boolean displayNotifications = prefs.getBoolean(displayNotificationsKey,
                 Boolean.parseBoolean(context.getString(R.string.pref_enable_notifications_default)));
 
         if (displayNotifications) {
+            String notificationsLastOpenKey = context.getString(R.string.pref_notifications_last_open_key);
+            long lastAppOpenTime = prefs.getLong(notificationsLastOpenKey, System.currentTimeMillis());
 
             String lastNotificationKey = context.getString(R.string.pref_last_notification);
-            long lastSync = prefs.getLong(lastNotificationKey, 0);
+            long lastNotificationTime = prefs.getLong(lastNotificationKey, 0);
 
-            if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
-                // Last sync was more than 1 day ago, let's send a notification with the property.
+            // check to see how many properties have come in since last we opened... not sure about my logic here
+            if (lastNotificationTime - lastAppOpenTime >= 0) {
                 String locationQuery = Utility.getPreferredLocation(context);
-
                 Uri propertyUri = PropertyContract.PropertyEntry.buildPropertyLocation(locationQuery);
 
-                // we'll query our contentProvider, as always
-                Cursor cursor = context.getContentResolver().query(propertyUri, NOTIFY_PPI_PROJECTION, null, null, null);
+                Cursor cursor = context.getContentResolver().query(propertyUri, NOTIFY_PPI_PROJECTION,
+                        PropertyContract.PropertyEntry.COLUMN_READ_FROM_REGISTER_DATE + " > ?",
+                        new String[] {String.valueOf(lastAppOpenTime)}, null);
 
                 if (cursor.moveToFirst()) {
-                    int propTypeId = cursor.getInt(INDEX_PROP_TYPE_ID);
-                    String high = cursor.getString(INDEX_PRICE);
-                    String low = cursor.getString(INDEX_MIN_TEMP);
-                    String desc = cursor.getString(INDEX_SHORT_DESC);
-                    int numBeds = cursor.getInt(INDEX_NUM_BEDS);
-                    int iconId = Utility.getIconResourceForPropType(propTypeId, numBeds);
+
+                    int numberRecords = cursor.getCount();
+                    int iconId = Utility.getIconResourceForPropType(-1, 4);
                     Resources resources = context.getResources();
                     Bitmap largeIcon = BitmapFactory.decodeResource(resources,
-                            Utility.getArtResourceForPropType(propTypeId, numBeds));
+                            Utility.getArtResourceForPropType(-1, 4));
                     String title = context.getString(R.string.app_name);
 
-                    // Define the text of the forecast.
-                    String contentText = String.format(context.getString(R.string.format_notification),
-                            desc,
-                            Utility.formatPrice(context, high),
-                            Utility.formatPrice(context, low));
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 
-                    // NotificationCompatBuilder is a very convenient way to build backward-compatible
-                    // notifications.  Just throw in some data.
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(getContext())
                                     .setColor(resources.getColor(R.color.ppi_light_blue))
                                     .setSmallIcon(iconId)
                                     .setLargeIcon(largeIcon)
                                     .setContentTitle(title)
-                                    .setContentText(contentText);
+                                    .setContentText(numberRecords + " properties found matching " + locationQuery + " since " + sdf.format(lastAppOpenTime));
 
-                    // Make something interesting happen when the user clicks on the notification.
-                    // In this case, opening the app is sufficient.
                     Intent resultIntent = new Intent(context, MainActivity.class);
 
-                    // The stack builder object will contain an artificial back stack for the
-                    // started Activity.
-                    // This ensures that navigating backward from the Activity leads out of
-                    // your application to the Home screen.
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                     stackBuilder.addNextIntent(resultIntent);
                     PendingIntent resultPendingIntent =
@@ -480,10 +467,8 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     NotificationManager mNotificationManager =
                             (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                    // PPI_NOTIFICATION_ID allows you to update the notification later on.
                     mNotificationManager.notify(PPI_NOTIFICATION_ID, mBuilder.build());
 
-                    //refreshing last sync
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putLong(lastNotificationKey, System.currentTimeMillis());
                     editor.commit();

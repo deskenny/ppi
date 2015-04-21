@@ -16,8 +16,10 @@
 package com.alley.android.ppi.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +76,12 @@ public class MainActivity extends ActionBarActivity implements OverviewFragment.
     @Override
     protected void onResume() {
         super.onResume();
+
+        String notificationsLastOpenKey = getApplicationContext().getString(R.string.pref_notifications_last_open_key);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong(notificationsLastOpenKey, System.currentTimeMillis());
+
         String location = Utility.getPreferredLocation( this );
             if (location != null && !location.equals(mLocation)) {
             OverviewFragment ff = (OverviewFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_property);

@@ -54,6 +54,7 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
 
                 PropertyContract.PropertyEntry.COLUMN_LOC_KEY + " INTEGER NOT NULL, " +
                 PropertyContract.PropertyEntry.COLUMN_DATE + " INTEGER NOT NULL, " +
+                PropertyContract.PropertyEntry.COLUMN_READ_FROM_REGISTER_DATE + " INTEGER NULL, " +
                 PropertyContract.PropertyEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
                 PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC + " TEXT, " +
                 PropertyContract.PropertyEntry.COLUMN_HEADER_FEATURES + " TEXT, " +
