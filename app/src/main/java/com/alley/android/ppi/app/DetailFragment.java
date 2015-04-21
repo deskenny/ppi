@@ -17,6 +17,7 @@ package com.alley.android.ppi.app;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -159,10 +161,18 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.HORIZONTAL);
         recList.setLayoutManager(llm);
-        imageAdapter = new DetailImageAdapter(this.getActivity(), null);
+
+        imageAdapter = new DetailImageAdapter(this.getActivity(), null, getScreenSize());
         recList.setAdapter(imageAdapter);
 
         return rootView;
+    }
+
+    private Point getScreenSize() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size;
     }
 
     @Override
