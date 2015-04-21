@@ -11,11 +11,9 @@ import android.widget.TextView;
 
 public class OverviewAdapter extends CursorAdapter {
 
-    private static final int VIEW_TYPE_COUNT = 2;
-    private static final int VIEW_TYPE_TODAY = 0;
-    private static final int VIEW_TYPE_FUTURE_DAY = 1;
+    private static final int VIEW_TYPE_COUNT = 1;
+    private static final int VIEW_TYPE_SUMMARY = 1;
 
-    private boolean mUseTodayLayout = true;
 
     public static class ViewHolder {
         public final ImageView iconView;
@@ -42,12 +40,8 @@ public class OverviewAdapter extends CursorAdapter {
         int viewType = getItemViewType(cursor.getPosition());
         int layoutId = -1;
         switch (viewType) {
-            case VIEW_TYPE_TODAY: {
-                layoutId = R.layout.list_item_forecast_today;
-                break;
-            }
-            case VIEW_TYPE_FUTURE_DAY: {
-                layoutId = R.layout.list_item_forecast;
+            case VIEW_TYPE_SUMMARY: {
+                layoutId = R.layout.list_item_property;
                 break;
             }
         }
@@ -67,13 +61,7 @@ public class OverviewAdapter extends CursorAdapter {
 
         int viewType = getItemViewType(cursor.getPosition());
         switch (viewType) {
-            case VIEW_TYPE_TODAY: {
-                viewHolder.iconView.setImageResource(Utility.getArtResourceForPropType(
-                        cursor.getInt(OverviewFragment.COLUMN_PROP_TYPE_ID),
-                        cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS)));
-                break;
-            }
-            case VIEW_TYPE_FUTURE_DAY: {
+            case VIEW_TYPE_SUMMARY: {
                 viewHolder.iconView.setImageResource(Utility.getIconResourceForPropType(
                         cursor.getInt(OverviewFragment.COLUMN_PROP_TYPE_ID),
                         cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS)));
@@ -98,14 +86,10 @@ public class OverviewAdapter extends CursorAdapter {
         }
     }
 
-    public void setUseTodayLayout(boolean useTodayLayout) {
-        mUseTodayLayout = useTodayLayout;
-    }
-
     @Override
     public int getItemViewType(int position) {
-        //return (position == 0 && mUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
-        return VIEW_TYPE_FUTURE_DAY;
+        //return (position == 0 && mUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_SUMMARY;
+        return VIEW_TYPE_SUMMARY;
     }
 
     @Override

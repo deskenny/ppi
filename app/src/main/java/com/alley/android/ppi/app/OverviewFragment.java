@@ -58,7 +58,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
-    private boolean mUseTodayLayout;
     private SwipeRefreshLayout mRefreshLayout;
 
     private static final String SELECTED_KEY = "selected_position";
@@ -203,9 +202,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
-
-        mOverviewAdapter.setUseTodayLayout(mUseTodayLayout);
-
         return rootView;
     }
 
@@ -409,10 +405,4 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         mOverviewAdapter.swapCursor(null);
     }
 
-    public void setUseTodayLayout(boolean useTodayLayout) {
-        mUseTodayLayout = useTodayLayout;
-        if (mOverviewAdapter != null) {
-            mOverviewAdapter.setUseTodayLayout(mUseTodayLayout);
-        }
-    }
 }

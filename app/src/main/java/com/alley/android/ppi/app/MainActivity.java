@@ -50,10 +50,6 @@ public class MainActivity extends ActionBarActivity implements OverviewFragment.
             getSupportActionBar().setElevation(0f);
         }
 
-        OverviewFragment overviewFragment =  ((OverviewFragment)getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_forecast));
-        overviewFragment.setUseTodayLayout(!mTwoPane);
-
         PropertyPriceSyncAdapter.initializeSyncAdapter(this);
     }
 
@@ -80,7 +76,7 @@ public class MainActivity extends ActionBarActivity implements OverviewFragment.
         super.onResume();
         String location = Utility.getPreferredLocation( this );
             if (location != null && !location.equals(mLocation)) {
-            OverviewFragment ff = (OverviewFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+            OverviewFragment ff = (OverviewFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_property);
             if ( null != ff ) {
                 ff.onLocationChanged();
             }

@@ -12,7 +12,7 @@
     -->
 
     <fragment
-        android:id="@+id/fragment_forecast"
+        android:id="@+id/fragment_property"
         android:name="com.alley.android.ppi.app.OverviewFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
