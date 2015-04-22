@@ -275,13 +275,10 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             Context context = getContext();
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             String countyKey = context.getString(R.string.pref_county_key);
-            String locationKey = context.getString(R.string.pref_location_key);
             String monthsBackKey = context.getString(R.string.pref_months_ago_to_search);
 
-            String county = prefs.getString(countyKey,
-                    context.getString(R.string.pref_county_dublin));
-            String location = prefs.getString(locationKey,
-                    context.getString(R.string.pref_location_default));
+            String county = prefs.getString(countyKey, context.getString(R.string.pref_county_dublin));
+            String location = Utility.getPreferredLocation(getContext());
 
             String sMonthsAgoToSearch = prefs.getString(monthsBackKey,
                     context.getString(R.string.pref_months_ago_to_search_default));
