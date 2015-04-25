@@ -68,6 +68,7 @@ public class PropertyDbHelper extends SQLiteOpenHelper {
                 PropertyContract.PropertyEntry.COLUMN_BROCHURE_PRICE + " REAL DEFAULT 0, " +
                 PropertyContract.PropertyEntry.COLUMN_PRICE + " REAL NOT NULL, " +
                 PropertyContract.PropertyEntry.COLUMN_CLASS + " INTEGER DEFAULT 0, " +
+                PropertyContract.PropertyEntry.COLUMN_APARTMENT_HOUSE + " INTEGER DEFAULT 0, " +
 
                 PropertyContract.PropertyEntry.COLUMN_NUM_BEDS + " INTEGER, " +
                 PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA + " REAL, " +

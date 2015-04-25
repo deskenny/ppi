@@ -40,7 +40,11 @@ public class Utility {
 
     public static String standardiseAddress(String in) {
         if (in != null) {
-            return in.trim().toLowerCase();
+            String rVal = in.trim().toLowerCase();
+            if (!rVal.endsWith(".")) {
+                rVal += rVal + ".";
+            }
+            return rVal;
         }
         return null;
     }
@@ -110,23 +114,6 @@ public class Utility {
         } else {
             SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
             return shortenedDateFormat.format(dateInMillis);
-        }
-    }
-
-    public static String getDayName(Context context, long dateInMillis) {
-        Time t = new Time();
-        t.setToNow();
-        int julianDay = Time.getJulianDay(dateInMillis, t.gmtoff);
-        int currentJulianDay = Time.getJulianDay(System.currentTimeMillis(), t.gmtoff);
-        if (julianDay == currentJulianDay) {
-            return context.getString(R.string.today);
-        } else if (julianDay == currentJulianDay + 1) {
-            return context.getString(R.string.tomorrow);
-        } else {
-            Time time = new Time();
-            time.setToNow();
-            SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
-            return dayFormat.format(dateInMillis);
         }
     }
 

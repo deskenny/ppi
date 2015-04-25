@@ -106,6 +106,7 @@ public class PropertyContract {
         public static final String COLUMN_BROCHURE_PRICE = "brochure_price";
         public static final String COLUMN_PRICE = "price";
         public static final String COLUMN_CLASS = "class";
+        public static final String COLUMN_APARTMENT_HOUSE = "apt_house";
 
         // real representing number of bedrooms
         public static final String COLUMN_NUM_BEDS = "num_beds";

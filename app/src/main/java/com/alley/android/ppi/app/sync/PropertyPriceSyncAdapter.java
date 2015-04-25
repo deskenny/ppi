@@ -421,7 +421,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             long lastAppOpenTime = prefs.getLong(notificationsLastOpenKey, System.currentTimeMillis());
 
             String lastNotificationKey = context.getString(R.string.pref_last_notification);
-            long lastNotificationTime = prefs.getLong(lastNotificationKey, 0);
+            long lastNotificationTime = prefs.getLong(lastNotificationKey, Integer.MAX_VALUE);
 
             // check to see how many properties have come in since last we opened... not sure about my logic here
             if (lastNotificationTime - lastAppOpenTime >= 0) {

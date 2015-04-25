@@ -70,12 +70,32 @@ public class MyHomeAdapterHelper {
                 readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION, "contentAccommodation content3");
                 storeImages(doc, brochureValues, context);
                 calculateClass(brochureValues);
+                calculateApartmentHouse(brochureValues);
                 return true;
             }
         } catch (Exception e ) {
             Log.e(LOG_TAG, e.getMessage());
         }
         return false;
+    }
+
+    private void calculateApartmentHouse(ContentValues values) {
+        String description = (String) values.get(PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC);
+        if (description != null) {
+            if (description.contains("apartment") || description.contains("Apartment")) {
+                values.put(PropertyContract.PropertyEntry.COLUMN_APARTMENT_HOUSE, 1);
+                return;
+            }
+            else if (description.contains("house") || description.contains("House")) {
+                values.put(PropertyContract.PropertyEntry.COLUMN_APARTMENT_HOUSE, 2);
+                return;
+            }
+            else {
+                values.put(PropertyContract.PropertyEntry.COLUMN_APARTMENT_HOUSE, 0);
+                return;
+            }
+        }
+        values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 3);
     }
 
 
@@ -87,7 +107,15 @@ public class MyHomeAdapterHelper {
                 return;
             }
             else if (description.contains("in need of some modernisation")) {
-                values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 0);
+                values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 1);
+                return;
+            }
+            else if (description.contains("in need of some updat")) {
+                values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 2);
+                return;
+            }
+            else if (description.contains("recently modernised")) {
+                values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 5);
                 return;
             }
             else if (description.contains("excellent condition")) {
@@ -95,6 +123,7 @@ public class MyHomeAdapterHelper {
                 return;
             }
         }
+        // default values is 3
         values.put(PropertyContract.PropertyEntry.COLUMN_CLASS, 3);
     }
 
