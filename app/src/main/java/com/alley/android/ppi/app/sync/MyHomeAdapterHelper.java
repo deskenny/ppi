@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,8 +34,83 @@ public class MyHomeAdapterHelper {
 
     public final String LOG_TAG = MyHomeAdapterHelper.class.getSimpleName();
 
+    private HashMap<String, Integer> counties;
+
     public MyHomeAdapterHelper() {
+        counties = new HashMap<String, Integer>();
+        counties.put("Carlow", 1080);
+        counties.put("Cavan", 887);
+        counties.put("Clare", 618);
+        counties.put("Cork", 737);
+        counties.put(" -- Cork City", 769);
+        counties.put(" -- Cork West", 4243);
+        counties.put("Donegal", 1464);
+        counties.put("Dublin", 1265);
+        counties.put(" -- Dublin 1", 1441);
+        counties.put(" -- Dublin 2", 1442);
+        counties.put(" -- Dublin 3", 1443);
+        counties.put(" -- Dublin 4", 1444);
+        counties.put(" -- Dublin 5", 1445);
+        counties.put(" -- Dublin 6", 1446);
+        counties.put(" -- Dublin 6W", 1447);
+        counties.put(" -- Dublin 7", 1448);
+        counties.put(" -- Dublin 8", 1449);
+        counties.put(" -- Dublin 9", 1450);
+        counties.put(" -- Dublin 10", 1451);
+        counties.put(" -- Dublin 11", 1452);
+        counties.put(" -- Dublin 12", 1453);
+        counties.put(" -- Dublin 13", 1454);
+        counties.put(" -- Dublin 14", 1455);
+        counties.put(" -- Dublin 15", 1456);
+        counties.put(" -- Dublin 16", 1457);
+        counties.put(" -- Dublin 17", 1458);
+        counties.put(" -- Dublin 18", 1459);
+        counties.put(" -- Dublin 20", 1460);
+        counties.put(" -- Dublin 22", 1461);
+        counties.put(" -- Dublin 24", 1462);
+        counties.put(" -- Dublin North", 1365);
+        counties.put(" -- Dublin South", 1406);
+        counties.put(" -- Dublin County", 1463);
+        counties.put(" -- North County Dublin", 4610);
+        counties.put(" -- South County Dublin", 4611);
+        counties.put(" -- Dublin West", 1430);
+        counties.put("Galway", 2013);
+        counties.put(" -- Galway City", 2035);
+        counties.put("Kerry", 2448);
+        counties.put("Kildare", 2362);
+        counties.put("Kilkenny", 2414);
+        counties.put("Laois", 2670);
+        counties.put("Leitrim", 2648);
+        counties.put("Limerick", 2594);
+        counties.put(" -- Limerick City", 4155);
+        counties.put("Longford", 2515);
+        counties.put("Louth", 2535);
+        counties.put("Mayo", 2781);
+        counties.put("Meath", 2712);
+        counties.put("Monaghan", 2771);
+        counties.put("Offaly", 2888);
+        counties.put("Roscommon", 3091);
+        counties.put("Sligo", 3254);
+        counties.put("Tipperary", 3587);
+        counties.put("Waterford", 3944);
+        counties.put("Westmeath", 3969);
+        counties.put("Wexford", 4054);
+        counties.put("Wicklow", 4011);
     }
+
+    public void doMyHomeNewPropertySearch(String county) throws IOException {
+
+        int countyCode = counties.get(county);
+        Document doc = Jsoup.connect("http://www.myhome.ie/residential/search").data("Region", String.valueOf(countyCode)).post();
+        Elements elements = doc.select("a[class=address ResidentialForSale]");
+        for (Element element : elements) {
+            String addressSearch = element.text();
+            //String addressSearch = element.;
+            Log.i(LOG_TAG, "address From search: " + addressSearch);
+        }
+
+    }
+
 
     // URL would be something like http://www.myhome.ie/residential/brochure/146-downpatrick-road-crumlin-dublin-12/2896646
     public boolean readMyHomeBrochurePage(String link, ContentValues brochureValues, String address, Context context) {
@@ -59,9 +135,10 @@ public class MyHomeAdapterHelper {
                     int indexOfBed = detailedDescription.indexOf("Bed");
                     int indexOfHyphen = detailedDescription.indexOf("-");
                     int indexOfMetresSquared = detailedDescription.indexOf("m²");
+                    int indexOfSlash = detailedDescription.indexOf("/");
 
                     readMyHomeReadNumberBedrooms(detailedDescription, indexOfBed, indexOfHyphen, brochureValues);
-                    readMyHomeSquareFootage(detailedDescription, indexOfBed, indexOfHyphen, indexOfMetresSquared, brochureValues);
+                    readMyHomeSquareFootage(detailedDescription, indexOfBed, indexOfHyphen, indexOfMetresSquared, brochureValues, indexOfSlash);
                 }
                 readLocation(doc, brochureValues);
                 readDiv(doc, brochureValues, PropertyContract.PropertyEntry.COLUMN_CONTENT_DESC, "contentDescription content0");
@@ -267,16 +344,22 @@ public class MyHomeAdapterHelper {
         }
     }
 
-    private void readMyHomeSquareFootage(String detailedDescription, int indexOfBed, int indexOfHyphen, int indexOfMetresSquared, ContentValues propertyValues) {
+    private void readMyHomeSquareFootage(String detailedDescription, int indexOfBed, int indexOfHyphen, int indexOfMetresSquared, ContentValues propertyValues, int indexOfSlash) {
         if (detailedDescription != null && indexOfMetresSquared != -1 && indexOfBed != -1 && indexOfMetresSquared > indexOfBed) {
             String sSizeString = detailedDescription.substring(indexOfBed, indexOfMetresSquared).trim();
+            if (indexOfSlash < indexOfMetresSquared) {
+                sSizeString = detailedDescription.substring(indexOfSlash, indexOfMetresSquared).trim();
+                Log.e(LOG_TAG, "Avoid reverse square footage " + detailedDescription + " sizeString:" + sSizeString);
+            }
             sSizeString = sSizeString.replaceAll("[^\\d.]", ""); // strip the non numerics
             if (sSizeString != null) {
                 sSizeString = sSizeString.trim();
                 try {
-                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, Integer.parseInt(sSizeString));
+                    // 3 Bed Semi-Detached House 1100 ft² / 102.19 m²
+                    // 4 Bed Semi-Detached House 135.51 m² / 1459 ft² Sale Agreed
+                    propertyValues.put(PropertyContract.PropertyEntry.COLUMN_SQUARE_AREA, (int) Float.parseFloat(sSizeString));
                 } catch (NumberFormatException nfe) {
-                    Log.e(LOG_TAG, "had a problem reading square footage " + detailedDescription);
+                    Log.e(LOG_TAG, "had a problem reading square footage " + detailedDescription + " sizeString:" + sSizeString);
                 }
             }
         }
