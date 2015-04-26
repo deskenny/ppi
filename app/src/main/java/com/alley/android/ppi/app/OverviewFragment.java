@@ -79,7 +79,8 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             PropertyContract.LocationEntry.COLUMN_SEARCH_STRING_USED,
             PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID,
             PropertyContract.PropertyEntry.COLUMN_LATITUDE,
-            PropertyContract.PropertyEntry.COLUMN_LONGTITUDE
+            PropertyContract.PropertyEntry.COLUMN_LONGTITUDE,
+            PropertyContract.PropertyEntry.COLUMN_APARTMENT_HOUSE
     };
 
     static final int COL_PROPERTY_ID = 0;
@@ -91,6 +92,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COLUMN_PROP_TYPE_ID = 6;
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
+    static final int COL_APARTMENT_HOUSE = 9;
 
     @Override
     public void onRefresh() {
@@ -348,7 +350,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                             .position(house)
                             .title(cursor.getString(OverviewFragment.COL_PRICE))
                             .snippet(cursor.getString(OverviewFragment.COL_SEARCH_STRING_USED) + "/" + cursor.getString(OverviewFragment.COL_DESCRIPTION))
-                            .icon(getBitmap(cursor.getString(OverviewFragment.COLUMN_NUM_BEDS))));
+                            .icon(getBitmap(cursor.getString(OverviewFragment.COLUMN_NUM_BEDS), cursor.getString(OverviewFragment.COL_APARTMENT_HOUSE))));
                     Log.i(LOG_TAG, count + " " + cursor.getString(OverviewFragment.COL_PRICE) + " " + house.toString());
                 }
                 else {
@@ -359,15 +361,33 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         }
     }
 
-    public BitmapDescriptor getBitmap(String numberOfBeds) {
+    public BitmapDescriptor getBitmap(String numberOfBeds, String aptHouse) {
         if (numberOfBeds != null) {
             if (numberOfBeds.equalsIgnoreCase("1")) {
-                return BitmapDescriptorFactory.fromResource(R.drawable.ic_1_bed);
+                if (aptHouse != null && aptHouse.equalsIgnoreCase("1")) {
+                    return BitmapDescriptorFactory.fromResource(R.drawable.ic_1_bed_apt);
+                }
+                else {
+                    return BitmapDescriptorFactory.fromResource(R.drawable.ic_1_bed);
+                }
             } else if (numberOfBeds.equalsIgnoreCase("2")) {
-                return BitmapDescriptorFactory.fromResource(R.drawable.ic_2_bed);
+                if (aptHouse != null && aptHouse.equalsIgnoreCase("1")) {
+                    return BitmapDescriptorFactory.fromResource(R.drawable.ic_2_bed_apt);
+                }
+                else {
+                    return BitmapDescriptorFactory.fromResource(R.drawable.ic_2_bed);
+                }
             } else if (numberOfBeds.equalsIgnoreCase("3")) {
-                return BitmapDescriptorFactory.fromResource(R.drawable.ic_3_bed);
+                if (aptHouse != null && aptHouse.equalsIgnoreCase("1")) {
+                    return BitmapDescriptorFactory.fromResource(R.drawable.ic_3_bed_apt);
+                }
+                else {
+                    return BitmapDescriptorFactory.fromResource(R.drawable.ic_3_bed);
+                }
             }
+        }
+        if (aptHouse != null && aptHouse.equalsIgnoreCase("1")) {
+            return BitmapDescriptorFactory.fromResource(R.drawable.ic_4_bed_apt);
         }
         return BitmapDescriptorFactory.fromResource(R.drawable.ic_4_bed);
     }

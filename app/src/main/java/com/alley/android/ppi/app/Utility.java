@@ -126,19 +126,35 @@ public class Utility {
         return monthDayString;
     }
 
-    public static int getIconResourceForPropType(int propTypeId, int numBeds) {
+    public static int getIconResourceForPropType(int propTypeId, int numBeds, int aptHouse) {
         if (numBeds == 1) {
-            Log.i(LOG_TAG, "getting 1 bed icon");
-            return R.drawable.ic_1_bed;
+            if (aptHouse == 1) {
+                return R.drawable.ic_1_bed_apt;
+            }
+            else {
+                return R.drawable.ic_1_bed;
+            }
         } else if (numBeds == 2) {
-            Log.i(LOG_TAG, "getting 2 bed icon");
-            return R.drawable.ic_2_bed;
+            if (aptHouse == 1) {
+                return R.drawable.ic_2_bed_apt;
+            }
+            else {
+                return R.drawable.ic_2_bed;
+            }
         } else if (numBeds == 3) {
-            Log.i(LOG_TAG, "getting 3 bed icon");
-            return R.drawable.ic_3_bed;
+            if (aptHouse == 1) {
+                return R.drawable.ic_3_bed_apt;
+            }
+            else {
+                return R.drawable.ic_3_bed;
+            }
         } else if (numBeds > 3) {
-            Log.i(LOG_TAG, "getting 4 bed icon");
-            return R.drawable.ic_4_bed;
+            if (aptHouse == 1) {
+                return R.drawable.ic_4_bed_apt;
+            }
+            else {
+                return R.drawable.ic_4_bed;
+            }
         }
 
         if (propTypeId == VAT_EXCLUSIVE) {
@@ -152,19 +168,35 @@ public class Utility {
         return R.drawable.ic_spinner;
     }
 
-    public static int getArtResourceForPropType(int propTypeId, int numBeds) {
+    public static int getArtResourceForPropType(int propTypeId, int numBeds, int aptHouse) {
         if (numBeds == 1) {
-            Log.i(LOG_TAG, "getting 1 bed icon");
-            return R.drawable.art_1_bed;
+            if (aptHouse == 1) {
+                return R.drawable.art_1_bed_apt;
+            }
+            else {
+                return R.drawable.art_1_bed;
+            }
         } else if (numBeds == 2) {
-            Log.i(LOG_TAG, "getting 2 bed icon");
-            return R.drawable.art_2_bed;
+            if (aptHouse == 1) {
+                return R.drawable.art_2_bed_apt;
+            }
+            else {
+                return R.drawable.art_2_bed;
+            }
         } else if (numBeds == 3) {
-            Log.i(LOG_TAG, "getting 3 bed icon");
-            return R.drawable.art_3_bed;
+            if (aptHouse == 1) {
+                return R.drawable.art_3_bed_apt;
+            }
+            else {
+                return R.drawable.art_3_bed;
+            }
         } else if (numBeds > 3) {
-            Log.i(LOG_TAG, "getting 4 bed icon");
-            return R.drawable.art_4_bed;
+            if (aptHouse == 1) {
+                return R.drawable.art_4_bed_apt;
+            }
+            else {
+                return R.drawable.art_4_bed;
+            }
         }
         if (propTypeId == VAT_EXCLUSIVE) {
             Log.i(LOG_TAG, "getting VAT_EXCLUSIVE art");

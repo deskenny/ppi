@@ -64,7 +64,8 @@ public class OverviewAdapter extends CursorAdapter {
             case VIEW_TYPE_SUMMARY: {
                 viewHolder.iconView.setImageResource(Utility.getIconResourceForPropType(
                         cursor.getInt(OverviewFragment.COLUMN_PROP_TYPE_ID),
-                        cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS)));
+                        cursor.getInt(OverviewFragment.COLUMN_NUM_BEDS),
+                        cursor.getInt(OverviewFragment.COL_APARTMENT_HOUSE)));
                 break;
             }
         }

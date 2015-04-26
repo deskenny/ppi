@@ -74,6 +74,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             PropertyContract.PropertyEntry.COLUMN_ACCOMMODATION,
             PropertyContract.PropertyEntry.COLUMN_BER_DETAILS,
             PropertyContract.PropertyEntry.COLUMN_BROCHURE_SUCCESS,
+            PropertyContract.PropertyEntry.COLUMN_APARTMENT_HOUSE,
 
             // This works because the PropertyProvider returns location data joined with
             // property data, even though they're stored in two different tables.
@@ -106,8 +107,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COLUMN_ACCOMMODATION = 12;
     public static final int COLUMN_BER = 13;
     public static final int COLUMN_BROCHURE_SUCCESS = 14;
+    public static final int COLUMN_APARTMENT_HOUSE = 15;
 
-    public static final int COL_LOCATION_SETTING = 15;
+    public static final int COL_LOCATION_SETTING = 16;
 
     private ImageView mIconView;
     private TextView mDateView;
@@ -259,10 +261,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             int propertyId = data.getInt(COL_PROPERTY_CONDITION_ID);
             int numberOfBeds = data.getInt(COL_NUM_BEDS);
             float squareArea = data.getFloat(COL_SQUARE_AREA);
+            int aptHouse = data.getInt(COLUMN_APARTMENT_HOUSE);
+
 
 //            mIconView.setImageResource(Utility.getArtResourceForPropType(propertyId, numberOfBeds));
 
-            int artWork = Utility.getArtResourceForPropType(propertyId, numberOfBeds);
+            int artWork = Utility.getArtResourceForPropType(propertyId, numberOfBeds, aptHouse);
             mIconView.setImageResource(artWork);
 
             long date = data.getLong(COL_PROPERTY_DATE);

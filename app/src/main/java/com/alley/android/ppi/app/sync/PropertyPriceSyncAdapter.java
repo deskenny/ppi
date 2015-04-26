@@ -435,10 +435,10 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 if (cursor.moveToFirst()) {
 
                     int numberRecords = cursor.getCount();
-                    int iconId = Utility.getIconResourceForPropType(-1, 4);
+                    int iconId = Utility.getIconResourceForPropType(-1, 4, 0);
                     Resources resources = context.getResources();
                     Bitmap largeIcon = BitmapFactory.decodeResource(resources,
-                            Utility.getArtResourceForPropType(-1, 4));
+                            Utility.getArtResourceForPropType(-1, 4, 0));
                     String title = context.getString(R.string.app_name);
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
