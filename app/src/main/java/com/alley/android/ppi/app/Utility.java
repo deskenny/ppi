@@ -42,7 +42,7 @@ public class Utility {
         if (in != null) {
             String rVal = in.trim().toLowerCase();
             if (!rVal.endsWith(".")) {
-                rVal += rVal + ".";
+                rVal = rVal + ".";
             }
             return rVal;
         }

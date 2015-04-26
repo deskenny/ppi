@@ -378,8 +378,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         String snippet = marker.getSnippet();
         if (snippet != null && snippet.indexOf("/") != -1) {
             String address = snippet.substring(snippet.indexOf("/") + 1);
-            String location = snippet.substring(0, snippet.indexOf("/"));
-
             ((Callback) getActivity())
                     .onItemSelected(PropertyContract.PropertyEntry.buildPropertyWithAddress(address));
         }
