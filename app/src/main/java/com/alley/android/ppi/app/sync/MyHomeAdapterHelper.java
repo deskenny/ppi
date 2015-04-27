@@ -98,9 +98,13 @@ public class MyHomeAdapterHelper {
         counties.put("Wicklow", 4011);
     }
 
-    public void doMyHomeNewPropertySearch(String county) throws IOException {
+    public void doMyHomeNewPropertySearch(Vector<ContentValues> cVVector, String county) throws IOException {
 
         int countyCode = counties.get(county);
+        // hack just for des - if dublin I really want 1441
+        if (countyCode == 1265) {
+            countyCode = 1441;
+        }
         Document doc = Jsoup.connect("http://www.myhome.ie/residential/search").data("Region", String.valueOf(countyCode)).post();
         Elements elements = doc.select("a[class=address ResidentialForSale]");
         for (Element element : elements) {

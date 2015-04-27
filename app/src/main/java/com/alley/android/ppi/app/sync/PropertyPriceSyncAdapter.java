@@ -61,6 +61,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private static final int PPI_NOTIFICATION_ID = 3004;
 
+    private MyHomeAdapterHelper myHomeHelper = new MyHomeAdapterHelper();
 
     private static final String[] NOTIFY_PPI_PROJECTION = new String[]{
             PropertyContract.PropertyEntry.COLUMN_PROP_TYPE_ID,
@@ -115,6 +116,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             newBrochuresCursor = getNewBrochureList();
             if (newBrochuresCursor.getCount() == 0) {
                 doDeleteOld();
+                doMyHomeSync(account, extras, authority, provider, syncResult);
                 doOverviewSync(account, extras, authority, provider, syncResult);
                 doDetailSync(newBrochuresCursor, account, extras, authority, provider, syncResult);
             } else {
@@ -130,6 +132,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
     }
+
 
     private void doDeleteOld() {
         // want to delete the old property brochures and also more importantly the images!!!
@@ -192,6 +195,21 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             }
         }
         return addresses;
+    }
+
+    private void doMyHomeSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+        try {
+            Context context = getContext();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Vector<ContentValues> cVVector = new Vector<ContentValues>(4);
+
+            String countyKey = context.getString(R.string.pref_county_key);
+            String county = prefs.getString(countyKey, context.getString(R.string.pref_county_dublin));
+            myHomeHelper.doMyHomeNewPropertySearch(cVVector, county);
+        }
+        catch (IOException ioe) {
+            Log.e(LOG_TAG, "Had a problem doing myhome new search " + ioe.getMessage());
+        }
     }
 
     private void doDetailSync(Cursor newBrochuresCursor, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {

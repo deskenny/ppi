@@ -24,7 +24,7 @@ public class GoogleAdapterHelper {
     public boolean readGoogle(String address, ContentValues propertyValues, Context context) {
         try {
             String google = "http://www.google.com/search?q=";
-            String search = address;
+            String search = address + " brochure";
             String charset = "UTF-8";
             String userAgent = "PropertyPriceBot 1.0 (+http://propertyprice.ie/bot)"; // Change this to your company's name and bot homepage!
 
