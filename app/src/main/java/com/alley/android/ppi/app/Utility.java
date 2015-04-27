@@ -216,8 +216,8 @@ public class Utility {
     public static boolean isMatchedAddress(String brochureAddress, String searchedAddress) {
 
         if (brochureAddress != null && searchedAddress != null) {
-            brochureAddress = brochureAddress.toLowerCase().replaceAll("road", "rd").replaceAll("street", "st").replaceAll("\\,|\\.|\\;", "");
-            searchedAddress = searchedAddress.toLowerCase().replaceAll("road", "rd").replaceAll("street", "st").replaceAll("\\,|\\.|\\;", "");
+            brochureAddress = brochureAddress.toLowerCase().replaceAll("road", "rd").replaceAll("street", "st").replaceAll("avenue", "ave").replaceAll("\\,|\\.|\\;", "");
+            searchedAddress = searchedAddress.toLowerCase().replaceAll("road", "rd").replaceAll("street", "st").replaceAll("avenue", "ave").replaceAll("\\,|\\.|\\;", "");
             if (brochureAddress.length() > 15 && searchedAddress.length() > 15) {
                 brochureAddress = brochureAddress.substring(0, 15);
                 searchedAddress = searchedAddress.substring(0, 15);
