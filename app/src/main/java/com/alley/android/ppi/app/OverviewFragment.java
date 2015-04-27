@@ -48,8 +48,11 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class OverviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -319,9 +322,9 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             int cursorCount = cursor.getCount();
             Log.i(LOG_TAG, "After movetoFirst Cursor had " + cursor.getCount() + " entries, current position" + cursor.getPosition());
             LatLng house = null;
+            ArrayList<MarkerOptions> markers = new ArrayList<MarkerOptions>();
             while (count < cursorCount) { // this sucks but moveToFirst loses first entry so cant use cursor.moveToNext
                 cursor.moveToPosition(count);
-                Log.i(LOG_TAG, "In loop Cursor had " + cursor.getCount() + " entries, current position" + cursor.getPosition());
                 float lat = cursor.getFloat(COL_COORD_LAT);
                 float lon = cursor.getFloat(COL_COORD_LONG);
                 if (lat != 0 && lon != 0) {
@@ -336,11 +339,13 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                             mMap.moveCamera(center);
                         }
                     }
-                    mMap.addMarker(new MarkerOptions()
+                    MarkerOptions marker = new MarkerOptions()
                             .position(house)
                             .title(cursor.getString(OverviewFragment.COL_PRICE))
                             .snippet(cursor.getString(OverviewFragment.COL_SEARCH_STRING_USED) + "/" + cursor.getString(OverviewFragment.COL_DESCRIPTION))
-                            .icon(getBitmap(cursor.getString(OverviewFragment.COLUMN_NUM_BEDS), cursor.getString(OverviewFragment.COL_APARTMENT_HOUSE))));
+                            .icon(getBitmap(cursor.getString(OverviewFragment.COLUMN_NUM_BEDS), cursor.getString(OverviewFragment.COL_APARTMENT_HOUSE)));
+                    mMap.addMarker(marker);
+                    markers.add(marker);
                     Log.i(LOG_TAG, count + " " + cursor.getString(OverviewFragment.COL_PRICE) + " " + house.toString());
                 }
                 else {
@@ -348,6 +353,21 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                 }
                 count++;
             }
+            zoomToViewableObjects(markers);
+        }
+    }
+
+    private void zoomToViewableObjects(ArrayList<MarkerOptions> markers) {
+        if (mMap != null && markers.size() > 1 ) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            for (MarkerOptions marker : markers) {
+                builder.include(marker.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+            int padding = 0; // offset from edges of the map in pixels
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.animateCamera(cu);
         }
     }
 
