@@ -45,6 +45,7 @@ public class SettingsActivity extends PreferenceActivity
         EditTextPreference prefMonthsBackToSearch = (EditTextPreference)findPreference(getString(R.string.pref_months_ago_to_search));
         prefMonthsBackToSearch.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
+
     }
 
     private void bindPreferenceSummaryToValue(Preference preference) {
@@ -66,7 +67,7 @@ public class SettingsActivity extends PreferenceActivity
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
         } else {
-            preference.setSummary(stringValue);
+            preference.setSummary(preference.getSummary() + stringValue);
         }
         return true;
     }

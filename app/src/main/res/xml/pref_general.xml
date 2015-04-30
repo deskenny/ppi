@@ -5,6 +5,7 @@
 
     <EditTextPreference
         android:title="@string/pref_location_label"
+        android:summary="@string/pref_location_summary"
         android:key="@string/pref_location_key"
         android:defaultValue="@string/pref_location_default"
         android:inputType="text"
@@ -12,6 +13,7 @@
 
     <ListPreference
         android:title="@string/pref_county_label"
+        android:summary="@string/pref_county_summary"
         android:key="@string/pref_county_key"
         android:defaultValue="@string/pref_county_dublin"
         android:entryValues="@array/pref_county_values"
@@ -20,6 +22,7 @@
 
     <EditTextPreference
         android:title="@string/pref_num_days_keep_label"
+        android:summary="@string/pref_num_days_keep_summary"
         android:key="@string/pref_numberOfDaysToKeepProperty"
         android:defaultValue="@string/pref_numberOfDaysToKeepPropertyDefault"
         android:inputType="text"
@@ -28,6 +31,7 @@
     <EditTextPreference
         android:title="@string/pref_months_ago_to_search_label"
         android:key="@string/pref_months_ago_to_search"
+        android:summary="@string/pref_months_ago_to_summary"
         android:defaultValue="@string/pref_months_ago_to_search_default"
         android:inputType="text"
         android:singleLine="true" />
@@ -35,6 +39,7 @@
     <CheckBoxPreference
         android:title="@string/pref_enable_notifications_label"
         android:key="@string/pref_enable_notifications_key"
+        android:summary="@string/pref_enable_notifications_summary"
         android:summaryOff="@string/pref_enable_notifications_false"
         android:summaryOn="@string/pref_enable_notifications_true"
         android:defaultValue="@string/pref_enable_notifications_default" />

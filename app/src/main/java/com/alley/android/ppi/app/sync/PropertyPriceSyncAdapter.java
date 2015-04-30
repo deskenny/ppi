@@ -139,20 +139,24 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
         // could I do cascade delete here, if I had proper foreign key?
         Time dayTime = new Time();
         dayTime.setToNow();
+        Context context = getContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String prefKey = context.getString(R.string.pref_last_delete_check_time_key);
+        if (prefs.getLong(prefKey, 0) > System.currentTimeMillis() - 86400000 ) {
+            int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
 
-        int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), dayTime.gmtoff);
+            dayTime = new Time();
 
-        dayTime = new Time();
+            getContext().getContentResolver().delete(PropertyContract.PropertyEntry.CONTENT_URI,
+                    PropertyContract.PropertyEntry.COLUMN_DATE + " <= ?",
+                    new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
 
-        getContext().getContentResolver().delete(PropertyContract.PropertyEntry.CONTENT_URI,
-                PropertyContract.PropertyEntry.COLUMN_DATE + " <= ?",
-                new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
-
-        getContext().getContentResolver().delete(PropertyContract.ImageEntry.CONTENT_URI,
-                PropertyContract.ImageEntry.COLUMN_DATE + " <= ?",
-                new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
-
-
+            getContext().getContentResolver().delete(PropertyContract.ImageEntry.CONTENT_URI,
+                    PropertyContract.ImageEntry.COLUMN_DATE + " <= ?",
+                    new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(prefKey, System.currentTimeMillis());
+        }
     }
 
     private static final String sLoadBrochureSelection =
