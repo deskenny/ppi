@@ -116,7 +116,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             newBrochuresCursor = getNewBrochureList();
             if (newBrochuresCursor.getCount() == 0) {
                 doDeleteOld();
-                doMyHomeSync(account, extras, authority, provider, syncResult);
+                //doMyHomeSync(account, extras, authority, provider, syncResult);
                 doOverviewSync(account, extras, authority, provider, syncResult);
                 doDetailSync(newBrochuresCursor, account, extras, authority, provider, syncResult);
             } else {
@@ -250,13 +250,13 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                     brochureCount++;
                 }
                 if (loopCount % 3 == 0) {
-                    addPropertyPrices(cVVector);
+                    addPropertyPrices(cVVector, false);
                 }
                 loopCount++;
             }
             Log.i(LOG_TAG, "Attempted read the details for " + cVVector.size() + " properties");
             Log.i(LOG_TAG, "Read brochures for " + brochureCount + " properties");
-            addPropertyPrices(cVVector);
+            addPropertyPrices(cVVector, false);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error in detail sync", e);
         }
@@ -380,7 +380,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
 
-            addPropertyPrices(cVVector);
+            addPropertyPrices(cVVector, true);
         } catch (ParseException pe) {
             Log.e(LOG_TAG, "Error parsing ", pe);
         } catch (IOException e) {
@@ -412,18 +412,19 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
         return in;
     }
 
-    private void addPropertyPrices(Vector<ContentValues> cVVector)
+    private void addPropertyPrices(Vector<ContentValues> cVVector, boolean doNotify)
             throws JSONException {
 
         if (cVVector.size() > 0) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
             getContext().getContentResolver().bulkInsert(PropertyContract.PropertyEntry.CONTENT_URI, cvArray);
-            notifyProperties();
+            if (doNotify) {
+                notifyProperties();
+            }
         }
 
         Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
-
     }
 
     private void notifyProperties() {
@@ -441,8 +442,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
             String lastNotificationKey = context.getString(R.string.pref_last_notification);
             long lastNotificationTime = prefs.getLong(lastNotificationKey, Integer.MAX_VALUE);
 
-            // check to see how many properties have come in since last we opened... not sure about my logic here
-            if (lastNotificationTime - lastAppOpenTime >= 0) {
+            if (lastAppOpenTime - lastNotificationTime >= 0) {
                 String locationQuery = Utility.getPreferredLocation(context);
                 Uri propertyUri = PropertyContract.PropertyEntry.buildPropertyLocation(locationQuery);
 
