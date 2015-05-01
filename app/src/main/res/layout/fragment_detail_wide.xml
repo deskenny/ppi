@@ -11,6 +11,22 @@
         android:padding="16dp"
         android:gravity="top">
 
+        <TextView
+            android:fontFamily="sans-serif-condensed"
+            android:id="@+id/detail_address_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@color/grey_700"
+            android:textAppearance="?android:textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/detail_date_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@color/grey_700"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-condensed" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/cardList"
             android:layout_width="match_parent"
@@ -33,33 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textSize="96sp" />
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:fontFamily="sans-serif-condensed"
-                    android:id="@+id/detail_address_textview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/grey_700"
-                    android:textAppearance="?android:textAppearanceLarge" />
-
-                <TextView
-                    android:id="@+id/detail_date_textview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/grey_700"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-condensed" />
-
-
-            </LinearLayout>
-
         </LinearLayout>
+
 
 
         <TextView
