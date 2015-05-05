@@ -45,7 +45,8 @@ public class SettingsActivity extends PreferenceActivity
         EditTextPreference prefMonthsBackToSearch = (EditTextPreference)findPreference(getString(R.string.pref_months_ago_to_search));
         prefMonthsBackToSearch.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 
-
+        EditTextPreference locationPref = (EditTextPreference)findPreference(getString(R.string.pref_location_key));
+        locationPref.setDialogMessage(getString(R.string.pref_location_advice));
     }
 
     private void bindPreferenceSummaryToValue(Preference preference) {

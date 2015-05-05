@@ -24,6 +24,7 @@
 
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_advice">Changes made will be reflected gradually over the next day or so as we search the register and web for you.</string>
 
     <string name="pref_location_summary">Be specific or general e.g. \"Dublin 12.\", \"Crumlin\" or \"Downpatrick Road\"\n</string>
     <string name="pref_num_days_keep_summary">How long should we keep the brochures downloaded. Longer will take more space.\n</string>
