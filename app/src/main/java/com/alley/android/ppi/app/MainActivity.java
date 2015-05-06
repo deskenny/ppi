@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements OverviewFragment.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
         editor.putLong(notificationsLastOpenKey, System.currentTimeMillis());
-
+        editor.commit();
         String location = Utility.getPreferredLocation( this );
             if (location != null && !location.equals(mLocation)) {
             OverviewFragment ff = (OverviewFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_property);

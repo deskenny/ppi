@@ -156,6 +156,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                     new String[]{Long.toString(dayTime.setJulianDay(julianStartDay - NUM_DAYS_TO_CLEANUP))});
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong(prefKey, System.currentTimeMillis());
+            editor.commit();
         }
     }
 
