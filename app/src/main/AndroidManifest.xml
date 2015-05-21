@@ -94,8 +94,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAS4FcNF0PKHZrIa65TSIEp7fwyhCK7mEM"/>
-            <!-- THIS IS THE RELEASE ONE android:value="AIzaSyAZLgve309_o6uVxwle3SKI4Ebyn3nqBxk"/> -->
-
+        <!-- THIS IS THE NON RELEASE ONE android:value="AIzaSyAZLgve309_o6uVxwle3SKI4Ebyn3nqBxk"/>  -->
 
     </application>
 

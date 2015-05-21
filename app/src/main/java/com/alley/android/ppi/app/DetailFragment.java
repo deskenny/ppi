@@ -17,6 +17,7 @@ package com.alley.android.ppi.app;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alley.android.ppi.app.data.PropertyContract;
+import com.alley.android.ppi.app.data.PropertyDbHelper;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -321,7 +324,19 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 hideShowBrochureFields(View.INVISIBLE);
             }
         }
+        // temporarily
+        //delete();
     }
+
+
+    private void delete() {
+        SQLiteDatabase db = new PropertyDbHelper(getActivity()).getWritableDatabase();
+        Log.i(LOG_TAG, "database is open - " + db.isOpen());
+
+        int i = db.delete(PropertyContract.PropertyEntry.TABLE_NAME, PropertyContract.PropertyEntry.COLUMN_ADDRESS + " like ?", new String [] {"336%"});
+        Log.i(LOG_TAG, "deleted - " + i + " records");
+    }
+
 
     private void hideShowBrochureFields(int visibility) {
         mContentDescription.setVisibility(visibility);
