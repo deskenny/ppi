@@ -15,7 +15,6 @@
  */
 package com.alley.android.ppi.app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -123,9 +122,8 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void readCameraSettingsFromPreferences() {
-        Activity activity = getActivity();
-        if (latitude == 0 && longitude == 0 && zoom == 0 && activity != null) {
-            SharedPreferences settings = activity.getSharedPreferences("MAP_SETTINGS", 0);
+        if (latitude == 0 && longitude == 0 && zoom == 0) {
+            SharedPreferences settings = getActivity().getSharedPreferences("MAP_SETTINGS", 0);
             latitude = settings.getFloat("latitude", (float) 0);
             longitude = settings.getFloat("longitude", (float) 0);
             zoom = settings.getFloat("zoom", 0);
@@ -199,7 +197,6 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
-
         return rootView;
     }
 
@@ -370,9 +367,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             LatLngBounds bounds = builder.build();
             int padding = 0; // offset from edges of the map in pixels
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            if (cu != null && bounds != null && bounds.describeContents() != 0) {
-                mMap.animateCamera(cu);
-            }
+            mMap.animateCamera(cu);
         }
     }
 

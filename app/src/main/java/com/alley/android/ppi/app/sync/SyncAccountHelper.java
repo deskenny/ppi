@@ -15,7 +15,7 @@ public class SyncAccountHelper {
 
     // Interval at which to sync with the property, in seconds.
     // 60 seconds (1 minute) * 720 = 12 hours
-    public static final int SYNC_INTERVAL = 60 * 720; // temporarily one minute
+    public static final int SYNC_INTERVAL = 60 * 720;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
 
     public static void syncImmediately(Context context) {
