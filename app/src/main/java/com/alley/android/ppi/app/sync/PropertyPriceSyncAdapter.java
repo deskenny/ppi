@@ -453,7 +453,7 @@ public class PropertyPriceSyncAdapter extends AbstractThreadedSyncAdapter {
                 if (cursor.moveToFirst()) {
 
                     int numberRecords = cursor.getCount();
-                    int iconId = Utility.getIconResourceForPropType(-1, 4, 0);
+                    int iconId =  R.drawable.ic_white_house;
                     Resources resources = context.getResources();
                     Bitmap largeIcon = BitmapFactory.decodeResource(resources,
                             Utility.getArtResourceForPropType(-1, 4, 0));
